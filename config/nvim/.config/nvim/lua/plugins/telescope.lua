@@ -11,6 +11,15 @@ return {
             prompt_position = "top",
           },
         },
+        find_files = {
+          hidden = true,
+          no_ignore = false,
+        },
+        live_grep = {
+          additional_args = function()
+            return { "--hidden" }
+          end,
+        },
       })
     end,
   },
@@ -26,8 +35,8 @@ return {
         extensions = {
           file_browser = {
             grouped = true,
-            respect_gitignore = true,
-            hidden = false,
+            respect_gitignore = false,
+            hidden = true,
             initial_mode = "normal",
             hijack_netrw = true,
             mappings = keymaps.telescope_file_browser_mappings(fb_actions),
@@ -43,10 +52,6 @@ return {
           telescope.extensions.file_browser.file_browser({
             path = vim.loop.cwd(),
             select_buffer = true,
-            initial_mode = "normal",
-            hidden = false,
-            respect_gitignore = true,
-            grouped = true,
           })
         end,
       })

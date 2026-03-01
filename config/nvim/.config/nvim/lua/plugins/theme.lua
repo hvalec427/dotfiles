@@ -1,5 +1,5 @@
-return {{
-  "sainnhe/gruvbox-material",
+return { {
+  "sainnhe/sonokai",
   lazy = false,
   priority = 1000,
   opts = {
@@ -12,7 +12,7 @@ return {{
     vim.g.gruvbox_material_background = "medium"
     vim.g.gruvbox_material_foreground = "material"
     vim.g.gruvbox_material_better_performance = 1
-    vim.cmd("colorscheme gruvbox-material")
+    vim.cmd("colorscheme sonokai")
   end,
 },
   { "nvim-tree/nvim-web-devicons", lazy = true },
