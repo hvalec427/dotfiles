@@ -58,6 +58,45 @@ choose_required() {
   done
 }
 
+apply_zsh_aliases() {
+  local zshrc="$HOME/.zshrc"
+  local alias_file="$DIR/zsh/common.zsh"
+  local start_line="if [ -f \"$alias_file\" ]; then"
+  local end_line="fi"
+
+  [ -f "$alias_file" ] || return
+  touch "$zshrc"
+
+  if grep -Fq "$start_line" "$zshrc" 2>/dev/null; then
+    tmpfile="$(mktemp)"
+    awk -v start="$start_line" -v end="$end_line" 'BEGIN {skip=0}
+      {
+        if (skip) {
+          if ($0 == end) {
+            skip=0
+          }
+          next
+        }
+        if ($0 == start) {
+          skip=1
+          next
+        }
+        print
+      }
+    ' "$zshrc" > "$tmpfile"
+    mv "$tmpfile" "$zshrc"
+  fi
+
+  if ! grep -Fq "$start_line" "$zshrc" 2>/dev/null; then
+    {
+      printf "if [ -f \"%s\" ]; then\n" "$alias_file"
+      printf "  source \"%s\"\n" "$alias_file"
+      printf "fi\n"
+    } >> "$zshrc"
+    log "applied zsh block to $zshrc"
+  fi
+}
+
 # collect brewfiles
 BREWFILES=()
 BREWFILE_PATHS=()
@@ -116,5 +155,7 @@ if [ -n "$SELECTED_PKGS" ]; then
     stow -d config -t ~ "$pkg"
   done
 fi
+
+apply_zsh_aliases
 
 log "bootstrap complete"
