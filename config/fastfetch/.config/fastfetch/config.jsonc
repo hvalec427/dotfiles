@@ -1,0 +1,96 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "auto",
+    "source": "~/.config/fastfetch/logo.txt",
+    "padding": {},
+    "position": "right",
+    "color": {
+        "1": "red"
+    }
+  },
+  "display": {
+    "separator": "", 
+    "key": {
+      "width": 25,
+      "paddingLeft": 0,
+      "type": "both"
+    }
+  },
+  "modules": [
+    {
+      "type": "title",
+      "color": {
+        "user": "red",
+        "at": "cyan",
+        "host": "red"
+      }
+    },
+
+    {
+      "type": "separator",
+      "outputColor": "bright_black"
+    },
+
+    {
+      "type": "custom",
+      "format": "{#bold_cyan}Hardware{#}"
+    },
+    { "type": "host", "keyColor": "cyan" },
+    { "type": "kernel", "keyColor": "cyan" },
+    { "type": "cpu", "keyColor": "cyan" },
+    { "type": "gpu", "keyColor": "cyan" },
+    {
+      "type": "memory",
+      "key": "Memory",
+      "keyColor": "cyan",
+      "format": "{total}"
+    },
+    {
+      "type": "disk",
+      "key": "Disk",
+      "keyColor": "cyan",
+      "format": "{size-total}"
+    },
+    {
+      "type": "display",
+      "key": "Screen",
+      "keyColor": "cyan",
+      "format": "{22} x {23} px @ {24} Hz{?12} in {12}\" ({13} ppi){?}"
+    },
+    { "type": "battery", "keyColor": "cyan" },
+
+    "break",
+
+    {
+      "type": "custom",
+      "format": "{#bold_magenta}Software{#}"
+    },
+    { "type": "os", "keyColor": "magenta" },
+    { "type": "shell", "keyColor": "magenta" },
+    { "type": "packages", "keyColor": "magenta" },
+    {
+      "type": "command",
+      "key": "Apps",
+      "keyColor": "magenta",
+      "text": "USER_EXCLUDES='Safari.app'; USER_APPS=$(find /Applications -maxdepth 1 -name '*.app' -prune | grep -v -E \"($USER_EXCLUDES)\" | wc -l | xargs); SYSTEM_APPS=$( (find /System/Applications -maxdepth 1 -name '*.app' -prune; find /System/Applications/Utilities -maxdepth 1 -name '*.app' -prune) | wc -l | xargs); if [ -d /Applications/Safari.app ]; then SYSTEM_APPS=$((SYSTEM_APPS + 1)); fi; TOTAL=$((USER_APPS + SYSTEM_APPS)); echo \"Total: $TOTAL - User: $USER_APPS - System: $SYSTEM_APPS\""
+    },
+
+    "break",
+
+    {
+      "type": "custom",
+      "format": "{#bold_yellow}Miscellaneous{#}"
+    },
+    { "type": "uptime", "keyColor": "yellow" },
+    { "type": "datetime", "keyColor": "yellow" },
+
+    "break",
+
+    { "type": "localip", "keyColor": "yellow" },
+    { "type": "wifi", "keyColor": "yellow" },
+
+    "break",
+    "colors"
+  ]
+}
