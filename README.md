@@ -9,21 +9,23 @@ These dotfiles are designed to automate the setup of essential tools, applicatio
 ## Usage
 
 1. **Clone the repository:**
-	```sh
-	git clone https://github.com/hvalec427/dotfiles.git
-	cd dotfiles
-	```
 
+   ```sh
+   git clone git@github.com:hvalec427/dotfiles.git
+   cd dotfiles
+   ```
 
 2. **Make the install script executable (if needed):**
-	```sh
-	chmod +x bootstrap/install.sh
-	```
+
+   ```sh
+   chmod +x bootstrap/install.sh
+   ```
 
 3. **Run the bootstrap script:**
-	```sh
-	./bootstrap/install.sh
-	```
+
+   ```sh
+   ./bootstrap/install.sh
+   ```
 
 4. **Follow on-screen instructions to complete the setup.**
 
