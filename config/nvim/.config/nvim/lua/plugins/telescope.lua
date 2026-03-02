@@ -4,57 +4,56 @@ return {
     tag = "0.1.5",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("telescope").setup({
+      local telescope = require("telescope")
+
+      -- Use fd if available, otherwise fallback to rg.
+      -- Crucially: include hidden files/dirs (dotfolders) so .config/** shows up.
+      local function find_command()
+        if vim.fn.executable("fd") == 1 then
+          return {
+            "fd",
+            "--type",
+            "f",
+            "--hidden",
+            "--follow",
+            "--exclude",
+            ".git",
+          }
+        end
+
+        return {
+          "rg",
+          "--files",
+          "--hidden",
+          "--follow",
+          "--glob",
+          "!.git/*",
+        }
+      end
+
+      telescope.setup({
         defaults = {
           sorting_strategy = "ascending",
           layout_config = {
             prompt_position = "top",
           },
         },
-        find_files = {
-          hidden = true,
-          no_ignore = false,
-        },
-        live_grep = {
-          additional_args = function()
-            return { "--hidden" }
-          end,
-        },
-      })
-    end,
-  },
-  {
-    "nvim-telescope/telescope-file-browser.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim" },
-    config = function()
-      local telescope = require("telescope")
-      local fb_actions = require("telescope").extensions.file_browser.actions
-      local keymaps = require("keymaps")
 
-      telescope.setup({
-        extensions = {
-          file_browser = {
-            grouped = true,
-            respect_gitignore = false,
+        pickers = {
+          find_files = {
             hidden = true,
-            initial_mode = "normal",
-            hijack_netrw = true,
-            mappings = keymaps.telescope_file_browser_mappings(fb_actions),
+            no_ignore = false,
+            find_command = find_command(),
+          },
+
+          live_grep = {
+            additional_args = function()
+              return { "--hidden" }
+            end,
           },
         },
-      })
-
-      telescope.load_extension("file_browser")
-
-      vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
-          vim.cmd("enew | setlocal bufhidden=wipe | only")
-          telescope.extensions.file_browser.file_browser({
-            path = vim.loop.cwd(),
-            select_buffer = true,
-          })
-        end,
       })
     end,
   },
 }
+
