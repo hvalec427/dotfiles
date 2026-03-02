@@ -21,7 +21,7 @@ fi
 
 choose_required() {
   title="$1"; shift
-  items=("none" "$@")
+  items=("all" "none" "$@")
 
   while :; do
     set +e
@@ -44,12 +44,17 @@ choose_required() {
     choice="$(printf "%s" "$choice" | sed '/^\s*$/d')"
 
     if [ -z "$choice" ]; then
-      log "select at least one option with space or choose 'none'"
+      log "select at least one option with space or choose 'none' or 'all'"
       continue
     fi
 
     if printf "%s\n" "$choice" | grep -qx "none"; then
       echo ""
+      return
+    fi
+
+    if printf "%s\n" "$choice" | grep -qx "all"; then
+      printf "%s\n" "$@"
       return
     fi
 
@@ -100,7 +105,7 @@ apply_zsh_aliases() {
 # collect brewfiles
 BREWFILES=()
 BREWFILE_PATHS=()
-for f in "$DIR"/Brewfiles/Brewfile.*; do
+for f in "$DIR"/brewfiles/Brewfile.*; do
   [ -f "$f" ] || continue
   base="$(basename "$f")"
   prof="${base#Brewfile.}"
@@ -119,8 +124,20 @@ done
 log "select brew profiles"
 SELECTED_PROFILES="$(choose_required "Profiles (space to toggle, enter to confirm)" "${BREWFILES[@]}")"
 
+if [ -n "$SELECTED_PROFILES" ]; then
+  printf "\n==> selected profiles:\n%s\n" "$SELECTED_PROFILES"
+else
+  log "no profiles selected"
+fi
+
 log "select configs to symlink"
 SELECTED_PKGS="$(choose_required "Configs (space to toggle, enter to confirm)" "${PACKAGES[@]}")"
+
+if [ -n "$SELECTED_PKGS" ]; then
+  printf "\n==> selected configs:\n%s\n" "$SELECTED_PKGS"
+else
+  log "no configs selected"
+fi
 
 # run brew only if selected
 if [ -n "$SELECTED_PROFILES" ]; then
