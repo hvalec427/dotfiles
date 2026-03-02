@@ -40,6 +40,7 @@ require("lazy").setup({
   require("plugins.git_tools"),
   require("plugins.conform"),
   require("plugins.CopilotChat"),
+  require("plugins.neo-tree"),
   { "nvim-tree/nvim-web-devicons", lazy = true },
 })
 
