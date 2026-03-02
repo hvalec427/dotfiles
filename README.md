@@ -10,7 +10,7 @@ These dotfiles are designed to automate the setup of essential tools, applicatio
 
 1. **Clone the repository:**
 	```sh
-	git clone https://github.com/hvalec/dotfiles.git
+	git clone https://github.com/hvalec427/dotfiles.git
 	cd dotfiles
 	```
 
