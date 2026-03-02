@@ -1,8 +1,10 @@
 local telescope = require("telescope.builtin")
 local map = vim.keymap.set
-local M = {}
 
+-- =========================
 -- Telescope pickers
+-- =========================
+
 map("n", "<leader>ff", function()
   telescope.find_files({})
 end, { desc = "[f]ind [f]iles (ignore .gitignore, skip junk)" })
@@ -26,7 +28,10 @@ map("n", "<leader>fG", function()
   })
 end, { desc = "[f]uzzy [G]REP (hit ALL files)" })
 
--- git
+-- =========================
+-- Git
+-- =========================
+
 map("n", "<leader>fs", function()
   telescope.git_status({
     initial_mode = "normal",
@@ -66,7 +71,10 @@ map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "File history 
 map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Gitsigns)" })
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 
+-- =========================
 -- LSP references
+-- =========================
+
 map("n", "grr", function()
   telescope.lsp_references({
     initial_mode = "normal",
@@ -75,63 +83,26 @@ map("n", "grr", function()
     show_line = true,
   })
 end, { desc = "LSP references (Telescope)" })
+
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (no Telescope)" })
 
--- telescope browser
-map("n", "<leader>fb", function()
-  require("telescope").extensions.file_browser.file_browser({
-    path = "%:p:h",
-    select_buffer = true,
-    initial_mode = "normal",
-  })
-end, { desc = "[f]ile [b]rowser (buffer dir)" })
-
-function M.telescope_file_browser_mappings(fb_actions)
-  return {
-    ["n"] = {
-      ["<leader>n"] = fb_actions.create,
-      ["<leader>r"] = fb_actions.rename,
-      ["<leader>d"] = fb_actions.remove,
-      ["<leader>m"] = fb_actions.move,
-      ["<leader>ap"] = function(prompt_bufnr)
-        local actions = require("telescope.actions.state")
-        local entry = actions.get_selected_entry()
-        local path = entry and entry.path or nil
-        if path then
-          vim.fn.setreg('+', path)
-          print("Copied to clipboard: " .. path)
-        else
-          print("No path selected.")
-        end
-      end,
-      ["<leader>p"] = function(prompt_bufnr)
-        local actions = require("telescope.actions.state")
-        local entry = actions.get_selected_entry()
-        local path = entry and entry.path or nil
-        if path then
-          local cwd = vim.fn.getcwd()
-          local relpath = vim.fn.fnamemodify(path, ':~:.')
-          vim.fn.setreg('+', relpath)
-          print("Copied relative path: " .. relpath)
-        else
-          print("No path selected.")
-        end
-      end,
-    },
-  }
-end
-
+-- =========================
 -- Copilot
-map("i", "<C-l>", 'copilot#Accept("\\<CR>")', {
+-- =========================
+
+-- Use Lua long brackets to avoid escape issues
+map("i", "<C-l>", [[copilot#Accept("\<CR>")]], {
   expr = true,
   replace_keycodes = false,
   desc = "Copilot Accept",
 })
 
---- Copilot Chat
+-- =========================
+-- Copilot Chat
+-- =========================
+
 local copilotchat = require("CopilotChat")
 
--- Normal: open chat + include *this* buffer explicitly
 map("n", "<leader>cc", function()
   local bufnr = vim.api.nvim_get_current_buf()
   copilotchat.open({
@@ -139,14 +110,14 @@ map("n", "<leader>cc", function()
   })
 end, { desc = "CopilotChat: current buffer" })
 
--- Visual: open chat + include selection
 map("v", "<leader>cc", function()
   copilotchat.open({
     sticky = { "#selection" },
   })
 end, { desc = "CopilotChat: selection" })
 
--- other
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "[e]xpand diagnostic message" })
+-- =========================
+-- Other
+-- =========================
 
-return M
+map("n", "<leader>e", vim.diagnostic.open_float, { desc = "[e]xpand diagnostic message" })
