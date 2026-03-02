@@ -37,6 +37,7 @@ return {
           layout_config = {
             prompt_position = "top",
           },
+          file_ignore_patterns = { "%.DS_Store$", "%.DS_store$" },
         },
 
         pickers = {
@@ -56,4 +57,3 @@ return {
     end,
   },
 }
-

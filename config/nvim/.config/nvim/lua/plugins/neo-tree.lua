@@ -25,7 +25,7 @@ return {
           filtered_items = {
             hide_dotfiles = false,
             hide_gitignored = true,
-            hide_by_name = { ".DS_Store", "thumbs.db" },
+            hide_by_name = { ".DS_Store", ".DS_store", "thumbs.db" },
           },
           follow_current_file = true,
           hijack_netrw_behavior = "open_default",
