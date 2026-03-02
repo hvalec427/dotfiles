@@ -53,3 +53,13 @@ eval "$(jenv init -)"
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
+
+alias ls="eza"
+alias ll="eza -la --icons --git --group-directories-first"
+alias lt="eza --tree --level=2 --icons"
+alias l="eza -1"
+
+eval "$(zoxide init zsh)"
+alias cd="z"
+
+alias cat="bat"
