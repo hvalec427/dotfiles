@@ -29,6 +29,13 @@ map("n", "<leader>fG", function()
 end, { desc = "[f]uzzy [G]REP (hit ALL files)" })
 
 -- =========================
+-- Neo file browser
+-- =========================
+map("n", "<leader>n", function()
+  require("neo-tree.command").execute({ toggle = true, reveal = true })
+end, { desc = "[n]eo-tree toggle" })
+
+-- =========================
 -- Git
 -- =========================
 
