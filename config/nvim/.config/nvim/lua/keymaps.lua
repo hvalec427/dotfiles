@@ -94,37 +94,8 @@ end, { desc = "LSP references (Telescope)" })
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (no Telescope)" })
 
 -- =========================
--- Copilot
--- =========================
-
--- Use Lua long brackets to avoid escape issues
-map("i", "<C-l>", [[copilot#Accept("\<CR>")]], {
-  expr = true,
-  replace_keycodes = false,
-  desc = "Copilot Accept",
-})
-
--- =========================
--- Copilot Chat
--- =========================
-
-local copilotchat = require("CopilotChat")
-
-map("n", "<leader>cc", function()
-  local bufnr = vim.api.nvim_get_current_buf()
-  copilotchat.open({
-    sticky = { "#buffer:" .. bufnr },
-  })
-end, { desc = "CopilotChat: current buffer" })
-
-map("v", "<leader>cc", function()
-  copilotchat.open({
-    sticky = { "#selection" },
-  })
-end, { desc = "CopilotChat: selection" })
-
--- =========================
 -- Other
 -- =========================
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "[e]xpand diagnostic message" })
+
