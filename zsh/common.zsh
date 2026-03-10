@@ -65,4 +65,6 @@ alias cd="z"
 alias cat="bat"
 
 # start tmux sessions scripts
-alias tmuxz="~/dev/dotfiles/tmux/sessions/zigahvalec.sh"
+alias tmuxz="~/.config/tmux/sessions/zigahvalec.sh"
+alias tmuxlhc="~/.config/tmux/sessions/laundryheap-mobile.sh"
+alias tmuxlhd="~/.config/tmux/sessions/laundryheapp-driverapp.sh"
