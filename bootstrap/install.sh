@@ -105,10 +105,15 @@ apply_zsh_aliases() {
 # collect brewfiles
 BREWFILES=()
 BREWFILE_PATHS=()
+ESSENTIAL_BREWFILE=""
 for f in "$DIR"/brewfiles/Brewfile.*; do
   [ -f "$f" ] || continue
   base="$(basename "$f")"
   prof="${base#Brewfile.}"
+  if [ "$prof" = "essentials" ]; then
+    ESSENTIAL_BREWFILE="$f"
+    continue
+  fi
   BREWFILES+=("$prof")
   BREWFILE_PATHS+=("$f")
 done
@@ -139,7 +144,47 @@ else
   log "no configs selected"
 fi
 
+# ensure essentials are always installed
+if [ -n "$ESSENTIAL_BREWFILE" ]; then
+  log "brew bundle: essentials"
+  brew bundle --file "$ESSENTIAL_BREWFILE" --verbose
+fi
+
 # run brew only if selected
+install_tpm_if_needed() {
+  local target="$HOME/.tmux/plugins/tpm"
+  if [ -d "$target" ]; then
+    log "tpm already installed"
+    return
+  fi
+
+  command -v git >/dev/null || { log "git missing; cannot install tpm"; return; }
+
+  log "installing tpm"
+  git clone https://github.com/tmux-plugins/tpm "$target"
+}
+
+install_repos_for_profile() {
+  local profile="$1"
+  local repo_file="$DIR/repos/$profile/repos.txt"
+  [ -f "$repo_file" ] || return
+
+  command -v git >/dev/null || { log "git missing; cannot install repos for $profile"; return; }
+
+  log "installing repos for $profile"
+  grep '^repo ' "$repo_file" | while read -r _ repo _ path; do
+    local dir="${path/#\~/$HOME}"
+    if [ -d "$dir" ]; then
+      log "$dir already exists"
+      continue
+    fi
+
+    log "Cloning $repo → $dir"
+    mkdir -p "$(dirname "$dir")"
+    git clone "$repo" "$dir"
+  done
+}
+
 if [ -n "$SELECTED_PROFILES" ]; then
   for profile in $SELECTED_PROFILES; do
     found=""
@@ -159,6 +204,12 @@ if [ -n "$SELECTED_PROFILES" ]; then
 
     log "brew bundle: $profile"
     brew bundle --file "$found" --verbose
+    if [ "$profile" = "coding" ]; then
+      install_tpm_if_needed
+    fi
+    if [ "$profile" = "coding" ] || [ "$profile" = "personal" ]; then
+      install_repos_for_profile "$profile"
+    fi
   done
 fi
 
