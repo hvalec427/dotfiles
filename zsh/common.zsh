@@ -63,3 +63,6 @@ eval "$(zoxide init zsh)"
 alias cd="z"
 
 alias cat="bat"
+
+# start tmux sessions scripts
+alias tmuxz="~/dev/dotfiles/tmux/sessions/zigahvalec.sh"
