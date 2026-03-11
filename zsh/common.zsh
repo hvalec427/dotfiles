@@ -1,42 +1,5 @@
-# this is to handle jumping to commong paths
-typeset -A JUMP_PATHS
-JUMP_PATHS=(
-  dev "$HOME/dev"
-  dot "$HOME/dev/dotfiles"
-  dotfiles "$HOME/dev/dotfiles"
-  hvalec "$HOME/dev/zigahvalec"
-  .config "$HOME/.config/"
-)
-
-jump() {
-  if [[ $# -eq 0 ]]; then
-    cd "$HOME" || return
-    return
-  fi
-
-  case "$1" in
-    -h|--help)
-      printf 'Available jump targets:\n'
-      for key in "${(@k)JUMP_PATHS}"; do
-        printf '  %s -> %s\n' "$key" "${JUMP_PATHS[$key]}"
-      done
-      return
-      ;;
-  esac
-
-  local dest="${JUMP_PATHS[$1]}"
-  if [[ -n $dest ]]; then
-    cd "$dest" || return
-    return
-  fi
-
-  cd "$HOME/$1" || {
-    printf 'jump: target "%s" not found\n' "$1" >&2
-    return 1
-  }
-}
-
-# this section just get's added to zshrc
+# homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
@@ -68,3 +31,4 @@ alias cat="bat"
 alias tmuxz="~/.config/tmux/sessions/zigahvalec.sh"
 alias tmuxlhc="~/.config/tmux/sessions/laundryheap-mobile.sh"
 alias tmuxlhd="~/.config/tmux/sessions/laundryheapp-driverapp.sh"
+alias tmuxlhr="~/.config/tmux/sessions/laundryheap-runners.sh"
