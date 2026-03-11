@@ -1,5 +1,4 @@
 local fzf = require("fzf-lua")
-local fzf_actions = require("fzf-lua.actions")
 local map = vim.keymap.set
 
 -- =========================
@@ -83,7 +82,7 @@ end, { desc = "[n]eo-tree toggle" })
 
 map("n", "<leader>fs", function()
   fzf.git_status({
-    previewer = "builtin",
+    previewer = "git_diff",
   })
 end, { desc = "[f]ile [s]tatus (Git status picker)" })
 
@@ -129,6 +128,14 @@ map("n", "grr", function()
 end, { desc = "LSP references (FZF)" })
 
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (no Telescope)" })
+
+-- =========================
+-- Which key
+-- =========================
+
+map("n", "<leader>?", function()
+  require("which-key").show({ global = false })
+end, { desc = "Buffer Local Keymaps (which-key)" })
 
 -- =========================
 -- Other

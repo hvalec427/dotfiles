@@ -43,6 +43,7 @@ require("lazy").setup({
   require("plugins.lsp"),
   require("plugins.git_tools"),
   require("plugins.navigator"),
+  require("plugins.whichkey"),
   require("plugins.conform"),
   require("plugins.neo-tree"),
 })
