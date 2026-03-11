@@ -30,8 +30,8 @@ tmux send-keys -t "$SESSION":main.1 'yarn start' C-m
 # make left pane larger
 tmux select-layout -t "$SESSION":main main-vertical
 
-tmux new-window -t "$SESSION" -n codex -c "$DIR"
-tmux send-keys -t "$SESSION":codex.0 'codex' C-m
+tmux new-window -t "$SESSION" -n copilot -c "$DIR"
+tmux send-keys -t "$SESSION":copilot.0 'copilot' C-m
 
 tmux new-window -t "$SESSION" -n terminal -c "$DIR"
 
