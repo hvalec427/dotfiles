@@ -3,9 +3,20 @@
 SESSION="laundryheap-mobile"
 DIR="$HOME/dev/laundryheap-mobile"
 
+cd "$DIR" || {
+  echo "Directory not found: $DIR" >&2
+  exit 1
+}
+
 tmux has-session -t "$SESSION" 2>/dev/null
 if [ $? -eq 0 ]; then
-  tmux attach -t "$SESSION"
+  RIGHT_CMD=$(tmux display-message -p -t "$SESSION":main.1 '#{pane_current_command}' 2>/dev/null)
+  if [ "$RIGHT_CMD" != "yarn" ] && [ "$RIGHT_CMD" != "node" ]; then
+    tmux send-keys -t "$SESSION":main.1 'yarn start' C-m
+  fi
+  tmux select-window -t "$SESSION":main
+  tmux select-pane -t "$SESSION":main.0
+  tmux attach-session -c "$DIR" -t "$SESSION"
   exit 0
 fi
 
@@ -24,5 +35,6 @@ tmux send-keys -t "$SESSION":codex.0 'codex' C-m
 
 tmux new-window -t "$SESSION" -n terminal -c "$DIR"
 
+tmux select-window -t "$SESSION":main
 tmux select-pane -t "$SESSION":main.0
-tmux attach-session -t "$SESSION"
+tmux attach-session -c "$DIR" -t "$SESSION"
