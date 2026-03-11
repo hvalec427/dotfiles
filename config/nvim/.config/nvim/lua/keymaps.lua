@@ -76,12 +76,12 @@ map("n", "<leader>gD", "<cmd>DiffviewOpen<CR>", { desc = "Diff working directory
 map("n", "<leader>gd", "<cmd>Gitsigns diffthis HEAD<CR>", { desc = "Diff current file vs last commit" })
 map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "File history (current file)" })
 map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Gitsigns)" })
-map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 
 -- =========================
 -- LSP references
 -- =========================
 
+map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 map("n", "grr", function()
   telescope.lsp_references({
     initial_mode = "normal",
@@ -98,4 +98,3 @@ map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (no Telescope)"
 -- =========================
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "[e]xpand diagnostic message" })
-
