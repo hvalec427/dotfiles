@@ -1,6 +1,14 @@
 local fzf = require("fzf-lua")
 local map = vim.keymap.set
 
+local function grep_word_opts()
+  return {
+    hidden = true,
+    no_ignore = false,
+    rg_opts = "--column --line-number --no-heading --color=always -i",
+  }
+end
+
 -- =========================
 -- FZF pickers
 -- =========================
@@ -36,20 +44,12 @@ map("n", "<leader>fd", function()
 end, { desc = "[f]ind [d]efs (alternate keymap picker)" })
 
 map("n", "<leader>fw", function()
-  fzf.grep_cword({
-    hidden = true,
-    no_ignore = false,
-    rg_opts = "--column --line-number --no-heading --color=always -i",
-  })
+  fzf.grep_cword(grep_word_opts())
 end, { desc = "[f]ind [w]ord (case-insensitive)" })
 
-map("n", "<leader>fW", function()
-  fzf.grep_cWORD({
-    hidden = true,
-    no_ignore = false,
-    rg_opts = "--column --line-number --no-heading --color=always -i",
-  })
-end, { desc = "[f]ind [W]ORD (case-insensitive)" })
+map("v", "<leader>fw", function()
+  fzf.grep_visual(grep_word_opts())
+end, { desc = "[f]ind selected [w]ord (case-insensitive)" })
 
 map("n", "<leader>fg", function()
   fzf.live_grep({
