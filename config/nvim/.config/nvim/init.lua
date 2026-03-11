@@ -10,6 +10,10 @@ vim.opt.number = true         -- show absolute line number for current line
 vim.opt.relativenumber = true -- show relative numbers for all other lines
 vim.opt.ignorecase = true     -- ignore case when searching
 vim.opt.smartcase = true      -- but be case-sensitive if uppercase is used
+vim.opt.completeopt = { "menuone", "noselect" }
+vim.opt.signcolumn = "yes" -- Always show the sign column to avoid text shifting when diagnostics appear
+vim.opt.scrolloff = 8 -- Keep eight lines visible above/below the cursor for better context while navigating
+vim.opt.updatetime = 200 -- Reduce the cursor-hold delay so LSP diagnostics/hover update more quickly
 
 -- =========================
 -- Bootstrap lazy.nvim
@@ -41,7 +45,6 @@ require("lazy").setup({
   require("plugins.navigator"),
   require("plugins.conform"),
   require("plugins.neo-tree"),
-  { "nvim-tree/nvim-web-devicons", lazy = true },
 })
 
 -- =========================
