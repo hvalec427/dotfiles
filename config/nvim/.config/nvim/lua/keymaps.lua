@@ -1,52 +1,72 @@
-local telescope = require("telescope.builtin")
+local fzf = require("fzf-lua")
+local fzf_actions = require("fzf-lua.actions")
 local map = vim.keymap.set
 
 -- =========================
--- Telescope pickers
+-- FZF pickers
 -- =========================
 
 map("n", "<leader>ff", function()
-  local ok = pcall(telescope.git_files, {
-    show_untracked = true,
+  fzf.files({
+    hidden = true,
+    follow = true,
+    fd_opts = "--type f --hidden --follow --exclude .git",
+    previewer = "builtin",
   })
-
-  if not ok then
-    telescope.find_files({
-      hidden = true,
-      find_command = {
-        "fd",
-        "--type", "f",
-        "--hidden",
-        "--exclude", ".git",
-      },
-    })
-  end
-end, { desc = "[f]ind [f]iles (git if possible)" })
+end, { desc = "[f]ind [f]iles (project files)" })
 
 map("n", "<leader>fF", function()
-  telescope.find_files({
+  fzf.files({
     hidden = true,
     no_ignore = true,
-    find_command = {
-      "fd",
-      "--type", "f",
-      "--hidden",
-      "--no-ignore",
-    },
+    follow = true,
+    fd_opts = "--type f --hidden --follow --no-ignore --exclude .git",
   })
 end, { desc = "[f]ind [F]ILES (ignore .gitignore + hidden)" })
 
+map("n", "<leader>fh", function()
+  fzf.help_tags()
+end, { desc = "[f]ind [h]elp (help tags picker)" })
+
+map("n", "<leader>fk", function()
+  fzf.keymaps()
+end, { desc = "[f]ind [k]eymaps (keymap picker)" })
+
+map("n", "<leader>fd", function()
+  fzf.keymaps()
+end, { desc = "[f]ind [d]efs (alternate keymap picker)" })
+
+map("n", "<leader>fw", function()
+  fzf.grep_cword({
+    hidden = true,
+    no_ignore = true,
+  })
+end, { desc = "[f]ind [w]ord (grep under cursor until end of word)" })
+
+map("n", "<leader>fW", function()
+  fzf.grep_cword({
+    hidden = true,
+    no_ignore = true,
+  })
+end, { desc = "[f]ind [W]ORD (grep under cursor until space)" })
+
 map("n", "<leader>fg", function()
-  telescope.live_grep({})
+  fzf.live_grep({
+    hidden = true,
+    no_ignore = false,
+  })
 end, { desc = "[f]uzzy [g]rep (ignore .gitignore)" })
 
 map("n", "<leader>fG", function()
-  telescope.live_grep({
-    additional_args = function(_)
-      return { "--no-ignore", "--hidden" }
-    end,
+  fzf.live_grep({
+    hidden = true,
+    no_ignore = true,
   })
 end, { desc = "[f]uzzy [G]REP (hit ALL files)" })
+
+map("n", "<leader><leader>", function()
+  fzf.buffers()
+end, { desc = "FZF current [b]uffers" })
 
 -- =========================
 -- Neo file browser
@@ -60,8 +80,8 @@ end, { desc = "[n]eo-tree toggle" })
 -- =========================
 
 map("n", "<leader>fs", function()
-  telescope.git_status({
-    initial_mode = "normal",
+  fzf.git_status({
+    previewer = "builtin",
   })
 end, { desc = "[f]ile [s]tatus (Git status picker)" })
 
@@ -103,13 +123,8 @@ map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Git
 
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 map("n", "grr", function()
-  telescope.lsp_references({
-    initial_mode = "normal",
-    include_current_file = true,
-    include_declaration = false,
-    show_line = true,
-  })
-end, { desc = "LSP references (Telescope)" })
+  fzf.lsp_references()
+end, { desc = "LSP references (FZF)" })
 
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (no Telescope)" })
 
