@@ -39,16 +39,18 @@ end, { desc = "[f]ind [d]efs (alternate keymap picker)" })
 map("n", "<leader>fw", function()
   fzf.grep_cword({
     hidden = true,
-    no_ignore = true,
+    no_ignore = false,
+    rg_opts = "--column --line-number --no-heading --color=always -i",
   })
-end, { desc = "[f]ind [w]ord (grep under cursor until end of word)" })
+end, { desc = "[f]ind [w]ord (case-insensitive)" })
 
 map("n", "<leader>fW", function()
-  fzf.grep_cword({
+  fzf.grep_cWORD({
     hidden = true,
-    no_ignore = true,
+    no_ignore = false,
+    rg_opts = "--column --line-number --no-heading --color=always -i",
   })
-end, { desc = "[f]ind [W]ORD (grep under cursor until space)" })
+end, { desc = "[f]ind [W]ORD (case-insensitive)" })
 
 map("n", "<leader>fg", function()
   fzf.live_grep({
