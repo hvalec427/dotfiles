@@ -15,13 +15,14 @@ These dotfiles are designed to automate the setup of essential tools, applicatio
    cd dotfiles
    ```
 
-2. **Make the install script executable (if needed):**
+2. **Make the executable-helper script executable and run it:**
 
    ```sh
-   chmod +x bootstrap/install.sh
+   chmod +x zsh/make-scripts-executable.sh
+   ./zsh/make-scripts-executable.sh
    ```
 
-3. **Run the bootstrap script:**
+3. **Run the bootstrap script to install from Brewfile and prepare `.config` files:**
 
    ```sh
    ./bootstrap/install.sh
