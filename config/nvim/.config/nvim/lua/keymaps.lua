@@ -6,15 +6,35 @@ local map = vim.keymap.set
 -- =========================
 
 map("n", "<leader>ff", function()
-  telescope.find_files({})
-end, { desc = "[f]ind [f]iles (ignore .gitignore, skip junk)" })
+  local ok = pcall(telescope.git_files, {
+    show_untracked = true,
+  })
+
+  if not ok then
+    telescope.find_files({
+      hidden = true,
+      find_command = {
+        "fd",
+        "--type", "f",
+        "--hidden",
+        "--exclude", ".git",
+      },
+    })
+  end
+end, { desc = "[f]ind [f]iles (git if possible)" })
 
 map("n", "<leader>fF", function()
   telescope.find_files({
-    no_ignore = true,
     hidden = true,
+    no_ignore = true,
+    find_command = {
+      "fd",
+      "--type", "f",
+      "--hidden",
+      "--no-ignore",
+    },
   })
-end, { desc = "[f]ind [F]ILES (even node_modules)" })
+end, { desc = "[f]ind [F]ILES (ignore .gitignore + hidden)" })
 
 map("n", "<leader>fg", function()
   telescope.live_grep({})
