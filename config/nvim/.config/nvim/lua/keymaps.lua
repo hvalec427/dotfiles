@@ -55,15 +55,17 @@ map("n", "<leader>fg", function()
   fzf.live_grep({
     hidden = true,
     no_ignore = false,
+    rg_opts = "--glob '!**/.git/*'",
   })
-end, { desc = "[f]uzzy [g]rep (ignore .gitignore)" })
+end, { desc = "[f]uzzy [g]rep (respect .gitignore, hide .git)" })
 
 map("n", "<leader>fG", function()
   fzf.live_grep({
     hidden = true,
     no_ignore = true,
+    rg_opts = "--glob '!**/.git/*'",
   })
-end, { desc = "[f]uzzy [G]REP (hit ALL files)" })
+end, { desc = "[f]uzzy [G]REP (ALL files except .git)" })
 
 map("n", "<leader><leader>", function()
   fzf.buffers()
