@@ -5,8 +5,8 @@ return {
     opts = {
       keymap = {
         fzf = {
-          ["tab"] = "ignore",
-          ["btab"] = "ignore", -- shift+tab
+          ["tab"] = "down",
+          ["btab"] = "up",
         },
       },
     },

@@ -21,6 +21,7 @@ return {
           },
         },
         ts_ls = {},
+        eslint = {},
       }
 
       for server_name in pairs(servers) do
