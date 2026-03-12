@@ -5,7 +5,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 TARGET_FILES=(
-  "$REPO_ROOT/tmux/sessions/zigahvalec.sh"
   "$REPO_ROOT/tmux/sessions/dotfiles.sh"
 )
 
