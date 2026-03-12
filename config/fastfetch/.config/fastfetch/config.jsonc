@@ -4,7 +4,6 @@
     "type": "auto",
     "source": "~/.config/fastfetch/logo.txt",
     "padding": {},
-    "position": "right",
     "color": {
         "1": "red"
     }
