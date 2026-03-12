@@ -90,8 +90,10 @@ fi
 RESET_CMD=""
 $RESET && RESET_CMD="git reset --hard &&"
 
-tmux has-session -t "$SESSION" 2>/dev/null
-SESSION_EXISTS=$?
+SESSION_EXISTS=1
+if tmux has-session -t "$SESSION" >/dev/null 2>&1; then
+  SESSION_EXISTS=0
+fi
 
 start_window() {
   local window_name="$1"
