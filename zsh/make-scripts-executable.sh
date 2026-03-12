@@ -11,6 +11,7 @@ TARGET_FILES=(
   "$REPO_ROOT/config/tmux/.config/tmux/sessions/laundryheap-mobile.sh"
   "$REPO_ROOT/config/tmux/.config/tmux/sessions/laundryheapp-driverapp.sh"
   "$REPO_ROOT/config/tmux/.config/tmux/sessions/laundryheap-runners.sh"
+  "$REPO_ROOT/config/tmux/.config/tmux/sessions/dotfiles.sh"
 )
 
 changed=0
