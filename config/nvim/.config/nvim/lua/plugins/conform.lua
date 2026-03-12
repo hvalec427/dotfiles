@@ -9,8 +9,8 @@ return {
       },
       formatters_by_ft = {
         lua = { "stylua" },
-        javascript = { "prettier" },
-        typescript = { "prettier" },
+        javascript = { "prettier", "eslint_d" },
+        typescript = { "prettier", "eslint_d" },
       },
     })
 
@@ -22,4 +22,3 @@ return {
     })
   end,
 }
-
