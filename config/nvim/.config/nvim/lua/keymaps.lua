@@ -1,79 +1,54 @@
 local fzf = require("fzf-lua")
 local map = vim.keymap.set
+local fzf_options = require("plugins.fzf")
 
-local function grep_word_opts()
-  return {
-    hidden = true,
-    no_ignore = false,
-    rg_opts = "--column --line-number --no-heading --color=always -i",
-  }
-end
+-- =========================
+-- Shared FZF options (defined in plugins.fzf)
+-- =========================
+
+local file_opts = fzf_options.file_opts
+local grep_opts = fzf_options.grep_opts
 
 -- =========================
 -- FZF pickers
 -- =========================
 
 map("n", "<leader>ff", function()
-  fzf.files({
-    hidden = true,
-    follow = true,
-    fd_opts = "--type f --hidden --follow --exclude .git",
-    previewer = "builtin",
-  })
+  fzf.files(file_opts)
 end, { desc = "[f]ind [f]iles (project files)" })
-
-map("n", "<leader>fF", function()
-  fzf.files({
-    hidden = true,
-    no_ignore = true,
-    follow = true,
-    fd_opts = "--type f --hidden --follow --no-ignore --exclude .git",
-  })
-end, { desc = "[f]ind [F]ILES (ignore .gitignore + hidden)" })
 
 map("n", "<leader>fh", function()
   fzf.help_tags()
-end, { desc = "[f]ind [h]elp (help tags picker)" })
+end, { desc = "[f]ind [h]elp" })
 
 map("n", "<leader>fk", function()
   fzf.keymaps()
-end, { desc = "[f]ind [k]eymaps (keymap picker)" })
+end, { desc = "[f]ind [k]eymaps" })
 
 map("n", "<leader>fd", function()
-  fzf.keymaps()
-end, { desc = "[f]ind [d]efs (alternate keymap picker)" })
+  fzf.lsp_definitions()
+end, { desc = "[f]ind [d]efinitions" })
 
 map("n", "<leader>fw", function()
-  fzf.grep_cword(grep_word_opts())
-end, { desc = "[f]ind [w]ord (case-insensitive)" })
+  fzf.grep_cword(grep_opts)
+end, { desc = "[f]ind [w]ord" })
 
 map("v", "<leader>fw", function()
-  fzf.grep_visual(grep_word_opts())
-end, { desc = "[f]ind selected [w]ord (case-insensitive)" })
+  fzf.grep_visual(grep_opts)
+end, { desc = "[f]ind selected [w]ord" })
 
 map("n", "<leader>fg", function()
-  fzf.live_grep({
-    hidden = true,
-    no_ignore = false,
-    rg_opts = "--glob '!**/.git/*'",
-  })
-end, { desc = "[f]uzzy [g]rep (respect .gitignore, hide .git)" })
-
-map("n", "<leader>fG", function()
-  fzf.live_grep({
-    hidden = true,
-    no_ignore = true,
-    rg_opts = "--glob '!**/.git/*'",
-  })
-end, { desc = "[f]uzzy [G]REP (ALL files except .git)" })
+  fzf.live_grep(grep_opts)
+end, { desc = "[f]uzzy [g]rep (respect .gitignore)" })
 
 map("n", "<leader><leader>", function()
   fzf.buffers()
 end, { desc = "FZF current [b]uffers" })
 
 -- =========================
--- Neo file browser
+-- Neo-tree
 -- =========================
+
 map("n", "<leader>n", function()
   require("neo-tree.command").execute({ toggle = true, reveal = true })
 end, { desc = "[n]eo-tree toggle" })
@@ -97,11 +72,13 @@ local function close_diff_windows()
 
   local current_win = vim.api.nvim_get_current_win()
   local diff_found = false
+
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local has_diff = false
     pcall(function()
-      has_diff = vim.api.nvim_win_get_option(win, "diff")
+      has_diff = vim.api.nvim_get_option_value("diff", { win = win })
     end)
+
     if has_diff then
       diff_found = true
       if win ~= current_win then
@@ -121,37 +98,41 @@ map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "File history 
 map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Gitsigns)" })
 
 -- =========================
--- LSP references
+-- LSP
 -- =========================
 
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
+
 map("n", "grr", function()
   fzf.lsp_references()
 end, { desc = "LSP references (FZF)" })
 
-map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (no Telescope)" })
+map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (built-in)" })
 
 -- =========================
--- Which key
+-- Which-key
 -- =========================
 
 map("n", "<leader>?", function()
   require("which-key").show({ global = false })
-end, { desc = "Buffer Local Keymaps (which-key)" })
+end, { desc = "Buffer local keymaps (which-key)" })
 
 -- =========================
--- Error handling
+-- Diagnostics / Code actions
 -- =========================
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Expand diagnostic" })
 
 map("n", "<leader>ca", function()
-  require("fzf-lua").lsp_code_actions()
+  fzf.lsp_code_actions()
 end, { desc = "Code actions" })
 
 -- =========================
--- Other
+-- Misc
 -- =========================
 
--- Keep Ctrl+Z from suspending Neovim in any mode
+-- Prevent Ctrl+Z from suspending Neovim
 map({ "n", "v", "i", "t" }, "<C-z>", "<Nop>", { desc = "Disable suspend" })
+
+-- Paste without overwriting register
+map("v", "p", '"_dP', { desc = "Paste without overwriting register" })
