@@ -140,7 +140,18 @@ map("n", "<leader>?", function()
 end, { desc = "Buffer Local Keymaps (which-key)" })
 
 -- =========================
+-- Error handling
+-- =========================
+
+map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Expand diagnostic" })
+
+map("n", "<leader>ca", function()
+  require("fzf-lua").lsp_code_actions()
+end, { desc = "Code actions" })
+
+-- =========================
 -- Other
 -- =========================
 
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "[e]xpand diagnostic message" })
+-- Keep Ctrl+Z from suspending Neovim in any mode
+map({ "n", "v", "i", "t" }, "<C-z>", "<Nop>", { desc = "Disable suspend" })
