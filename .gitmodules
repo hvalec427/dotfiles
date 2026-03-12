@@ -1,0 +1,3 @@
+[submodule "private"]
+	path = private
+	url = git@github.com:hvalec427/private-dotfiles.git
