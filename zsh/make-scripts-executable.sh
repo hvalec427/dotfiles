@@ -5,13 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 TARGET_FILES=(
-  "$REPO_ROOT/bootstrap/install.sh"
-  "$REPO_ROOT/zsh/make-scripts-executable.sh"
-  "$REPO_ROOT/config/tmux/.config/tmux/sessions/zigahvalec.sh"
-  "$REPO_ROOT/config/tmux/.config/tmux/sessions/laundryheap-mobile.sh"
-  "$REPO_ROOT/config/tmux/.config/tmux/sessions/laundryheapp-driverapp.sh"
-  "$REPO_ROOT/config/tmux/.config/tmux/sessions/laundryheap-runners.sh"
-  "$REPO_ROOT/config/tmux/.config/tmux/sessions/dotfiles.sh"
+  "$REPO_ROOT/tmux/sessions/zigahvalec.sh"
+  "$REPO_ROOT/tmux/sessions/dotfiles.sh"
 )
 
 changed=0
@@ -24,6 +19,7 @@ for file in "${TARGET_FILES[@]}"; do
     continue
   fi
 
+  echo "file name $file"
   chmod +x "$file"
   changed=$((changed + 1))
 done

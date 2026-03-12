@@ -17,6 +17,10 @@ export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - zsh)"
 
+DOTFILES_ROOT="$HOME/dev/dotfiles"
+PUBLIC_TMUX_SESSIONS="$DOTFILES_ROOT/tmux/sessions"
+PRIVATE_TMUX_SESSIONS="$DOTFILES_ROOT/private/tmux/sessions"
+
 alias ls="eza"
 alias ll="eza -la --icons --git --group-directories-first"
 alias lt="eza --tree --level=2 --icons"
@@ -28,9 +32,6 @@ alias cd="z"
 alias cat="bat"
 
 # start tmux sessions scripts
-alias tmuxz="~/.config/tmux/sessions/zigahvalec.sh"
-alias tmuxlhc="~/.config/tmux/sessions/laundryheap-mobile.sh"
-alias tmuxlhd="~/.config/tmux/sessions/laundryheapp-driverapp.sh"
-alias tmuxlhr="~/.config/tmux/sessions/laundryheap-runners.sh"
-alias tmuxdot="~/.config/tmux/sessions/dotfiles.sh"
+alias tmuxz="$PUBLIC_TMUX_SESSIONS/zigahvalec.sh"
+alias tmuxdot="$PUBLIC_TMUX_SESSIONS/dotfiles.sh"
 alias lg="lazygit"
