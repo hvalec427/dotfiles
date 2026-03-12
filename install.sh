@@ -109,3 +109,4 @@ if [ -f "$private_installer" ]; then
   "$private_installer"
   log "done installing private installer"
 fi
+source ~/.zshrc

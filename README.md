@@ -1,12 +1,12 @@
 # Dotfiles
 
-Welcome to my dotfiles repository! This collection contains configuration files and scripts to help set up and personalize my development environment quickly and efficiently.
+Welcome to my dotfiles repository. The scripts and configurations here describe a portable macOS development workspace and automate installing tooling, symlinks, and shell helpers for a new machine.
 
 ## Overview
 
-These dotfiles are designed to automate the setup of essential tools, applications, and preferences on a new system. Whether configuring a fresh machine or keeping my environment consistent across devices, this repository makes the process seamless.
+This repo uses a single installer to bootstrap Homebrew, deploy Brewfiles, stow configuration packages into `~/.config`, and add shared zsh aliases. It optionally runs a second, private installer that layers sensitive or personal tweaks on top of the public dotfiles.
 
-## Usage
+## Setup
 
 1. **Clone the repository:**
 
@@ -15,19 +15,27 @@ These dotfiles are designed to automate the setup of essential tools, applicatio
    cd dotfiles
    ```
 
-2. **Make the executable-helper script executable and run it:**
+   or this if also including private repo(this is for me only)
+
+   ```sh
+   git clone --recurse-submodules git@github.com:hvalec427/dotfiles.git
+   cd dotfiles
+   ```
+
+2. **Make the installer executable:**
 
    ```sh
    chmod +x install.sh
    ```
 
-3. **Run the install script to install all dpendencies and prepare all configs:**
+3. **Run the installer:**
 
    ```sh
    ./install.sh
    ```
 
-## Notes
+4. **Re-running the installer** is safe; it will only reapply missing symlinks or clone missing repos.
 
-- The setup script will install essential packages and apply configuration files automatically.
+## Private configuration
 
+The `private/` directory contains additional dotfiles, tmux helpers, and Brewfiles that are not tracked in the public repository.
