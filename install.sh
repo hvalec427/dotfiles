@@ -59,7 +59,7 @@ log "done stowing configs"
 # install repos and extras
 log "installing repos"
 install_repos() {
-  local repo_file="$DIR/repos/repos.txt"
+  local repo_file="$DIR/repos.txt"
   [ -f "$repo_file" ] || return
 
   command -v git >/dev/null || { log "git missing; cannot install repos"; return; }
