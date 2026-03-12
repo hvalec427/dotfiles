@@ -32,6 +32,5 @@ alias cd="z"
 alias cat="bat"
 
 # start tmux sessions scripts
-alias tmuxz="$PUBLIC_TMUX_SESSIONS/zigahvalec.sh"
 alias tmuxdot="$PUBLIC_TMUX_SESSIONS/dotfiles.sh"
 alias lg="lazygit"
