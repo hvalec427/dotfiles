@@ -18,29 +18,16 @@ These dotfiles are designed to automate the setup of essential tools, applicatio
 2. **Make the executable-helper script executable and run it:**
 
    ```sh
-   chmod +x zsh/make-scripts-executable.sh
-   ./zsh/make-scripts-executable.sh
+   chmod +x install.sh
    ```
 
-3. **Run the bootstrap script to install from Brewfile and prepare `.config` files:**
+3. **Run the install script to install all dpendencies and prepare all configs:**
 
    ```sh
-   ./bootstrap/install.sh
+   ./install.sh
    ```
-
-4. **Follow on-screen instructions to complete the setup.**
 
 ## Notes
 
 - The setup script will install essential packages and apply configuration files automatically.
-- It allows me some customization depending on current machines needs.
 
-### What Gets Installed Automatically?
-
-When running the install.sh script, the following actions are performed:
-
-- **homebrew** is installed if not already present.
-- **gum** (for interactive prompts) is installed if missing.
-- **stow** is installed if needed, and used to manage symlinks for selected configs.
-
-This process ensures system is set up with needed tools and configurations automatically, streamlining environment setup.
