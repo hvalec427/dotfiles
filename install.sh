@@ -81,6 +81,13 @@ install_repos() {
 install_repos
 log "done installing repos"
 
+if command -v git >/dev/null && [ -f "$DIR/.gitmodules" ]; then
+  log "initializing private submodule"
+  if ! git -C "$DIR" submodule update --init private >/dev/null 2>&1; then
+    log "No credentials. Skipping..."
+  fi
+fi
+
 log "adding zsh aliases"
 alias_file="$DIR/zsh/common.zsh"
 zshrc="$HOME/.zshrc"
@@ -108,5 +115,20 @@ if [ -f "$private_installer" ]; then
   log "running private installer"
   "$private_installer"
   log "done installing private installer"
+else
+  if [ -d "$DIR/private" ]; then
+    log "private installer missing; ensure private submodule is fully initialized"
+  else
+    log "private repository not cloned; run 'git submodule update --init private' to pull it in"
+  fi
+  log "skipping private configuration"
 fi
-source ~/.zshrc
+
+if [ -f "$HOME/.zshrc" ]; then
+  log "sourcing ~/.zshrc"
+  source "$HOME/.zshrc" || log "sourcing ~/.zshrc failed; rerun manually from zsh"
+else
+  log "~/.zshrc missing; skipping shell refresh"
+fi
+
+log "Installation done. Enjoy :)"
