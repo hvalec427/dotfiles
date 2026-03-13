@@ -22,6 +22,11 @@ This repo uses a single installer to bootstrap Homebrew, deploy Brewfiles, stow 
    cd dotfiles
    ```
 
+   or if I forget
+   ```sh
+   git submodule update --init --recursive
+   ```
+
 2. **Make the installer executable:**
 
    ```sh
