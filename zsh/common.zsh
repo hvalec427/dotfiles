@@ -1,3 +1,6 @@
+# ensure we're running under zsh before continuing
+[[ -n "$ZSH_VERSION" ]] || return 0
+
 # homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
