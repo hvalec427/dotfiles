@@ -30,6 +30,11 @@ local plugin_spec = {
           ["btab"] = "up",
         },
       },
+      winopts = {
+        preview = {
+          layout = "vertical",
+        },
+      }
     },
   },
 }
