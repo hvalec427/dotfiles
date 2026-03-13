@@ -107,14 +107,20 @@ else
   log "$alias_file missing; skipping aliases"
 fi
 
-log "bootstrap complete"
+if [ -f "$HOME/.zshrc" ]; then
+  log "sourcing ~/.zshrc"
+  source "$HOME/.zshrc" || log "sourcing ~/.zshrc failed; rerun manually from zsh"
+else
+  log "~/.zshrc missing; skipping shell refresh"
+fi
+
+log "Installation done. Enjoy :)"
 
 private_installer="$DIR/private/install.sh"
 if [ -f "$private_installer" ]; then
   chmod +x "$private_installer"
   log "running private installer"
   "$private_installer"
-  log "done installing private installer"
 else
   if [ -d "$DIR/private" ]; then
     log "private installer missing; ensure private submodule is fully initialized"
@@ -124,11 +130,3 @@ else
   log "skipping private configuration"
 fi
 
-if [ -f "$HOME/.zshrc" ]; then
-  log "sourcing ~/.zshrc"
-  source "$HOME/.zshrc" || log "sourcing ~/.zshrc failed; rerun manually from zsh"
-else
-  log "~/.zshrc missing; skipping shell refresh"
-fi
-
-log "Installation done. Enjoy :)"
