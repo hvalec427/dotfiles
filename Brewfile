@@ -1,5 +1,3 @@
-# Combined Brewfile from essentials + coding profiles
-
 # Essentials
 brew "btop"
 brew "git"
