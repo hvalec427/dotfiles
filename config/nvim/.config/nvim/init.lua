@@ -55,3 +55,38 @@ require("lazy").setup({
 -- Keymaps
 -- =========================
 require("keymaps")
+
+-- =========================
+-- Auto quit
+-- =========================
+vim.api.nvim_create_autocmd("BufEnter", {
+  desc = "Close Neovim when only sidebar windows remain",
+  callback = function()
+    local wins = vim.api.nvim_tabpage_list_wins(0)
+    -- neo-tree handles if there is only a single window left
+    if #wins == 1 and vim.bo[vim.api.nvim_win_get_buf(wins[1])].filetype ~= "aerial" then
+      return
+    end
+
+    local sidebar_fts = { aerial = true, ["neo-tree"] = true }
+    for _, winid in ipairs(wins) do
+      if vim.api.nvim_win_is_valid(winid) then
+        local bufnr = vim.api.nvim_win_get_buf(winid)
+        local filetype = vim.bo[bufnr].filetype
+        -- If any visible windows are not sidebars, early return
+        if not sidebar_fts[filetype] then
+          return
+        -- If the visible window is a sidebar, remove that type from detection
+        else
+          sidebar_fts[filetype] = nil
+        end
+      end
+    end
+
+    if #vim.api.nvim_list_tabpages() > 1 then
+      vim.cmd.tabclose()
+    else
+      vim.cmd.qall()
+    end
+  end,
+})
