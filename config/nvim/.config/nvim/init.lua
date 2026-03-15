@@ -42,6 +42,7 @@ require("lazy").setup({
   require("plugins.fzf"),
   require("plugins.lualine"),
   require("plugins.cmp"),
+  require("plugins.autopairs"),
   require("plugins.lsp"),
   require("plugins.git_tools"),
   require("plugins.navigator"),
