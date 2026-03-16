@@ -16,6 +16,12 @@ vim.opt.scrolloff = 8         -- Keep eight lines visible above/below the cursor
 vim.opt.updatetime = 200      -- Reduce the cursor-hold delay so LSP diagnostics/hover update more quickly
 vim.opt.swapfile = false      -- ignore swap files
 vim.opt.undofile = true       -- enable undofile history
+vim.diagnostic.config({
+  virtual_text = true,        -- show error text inline
+  underline = true,
+  signs = true,
+  update_in_insert = true, -- update while typing
+})
 
 -- =========================
 -- Bootstrap lazy.nvim
