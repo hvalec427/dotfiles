@@ -1,5 +1,6 @@
 local fzf = require("fzf-lua")
 local map = vim.keymap.set
+local mapOld = vim.api.nvim_set_keymap
 local fzf_options = require("plugins.fzf")
 
 -- =========================
@@ -108,6 +109,17 @@ map("n", "grr", function()
 end, { desc = "LSP references (FZF)" })
 
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (built-in)" })
+
+-- =========================
+-- Copilot
+-- =========================
+
+map(
+  "i",
+  "<C-J>",
+  "copilot#Accept(\"\\<CR>\")",
+  { expr = true, silent = true, noremap = false, replace_keycodes = false }
+)
 
 -- =========================
 -- Which-key
