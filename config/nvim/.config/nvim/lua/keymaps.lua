@@ -136,3 +136,9 @@ map({ "n", "v", "i", "t" }, "<C-z>", "<Nop>", { desc = "Disable suspend" })
 
 -- Paste without overwriting register
 map("v", "p", '"_dP', { desc = "Paste without overwriting register" })
+
+-- increase resize steps
+vim.keymap.set("n", "<C-w>+", "<cmd>resize +5<CR>", { silent = true })
+vim.keymap.set("n", "<C-w>-", "<cmd>resize -5<CR>", { silent = true })
+vim.keymap.set("n", "<C-w>>", "<cmd>vertical resize +15<CR>", { silent = true })
+vim.keymap.set("n", "<C-w><", "<cmd>vertical resize -15<CR>", { silent = true })

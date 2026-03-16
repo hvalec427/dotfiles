@@ -16,10 +16,6 @@ vim.opt.scrolloff = 8         -- Keep eight lines visible above/below the cursor
 vim.opt.updatetime = 200      -- Reduce the cursor-hold delay so LSP diagnostics/hover update more quickly
 vim.opt.swapfile = false      -- ignore swap files
 vim.opt.undofile = true       -- enable undofile history
-vim.keymap.set("n", "<C-w>+", "<cmd>resize +5<CR>", { silent = true })
-vim.keymap.set("n", "<C-w>-", "<cmd>resize -5<CR>", { silent = true })
-vim.keymap.set("n", "<C-w>>", "<cmd>vertical resize +15<CR>", { silent = true })
-vim.keymap.set("n", "<C-w><", "<cmd>vertical resize -15<CR>", { silent = true })
 
 -- =========================
 -- Bootstrap lazy.nvim
