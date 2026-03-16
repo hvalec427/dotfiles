@@ -7,10 +7,18 @@ return {
     "hrsh7th/cmp-cmdline",
     "saadparwaiz1/cmp_luasnip",
     "L3MON4D3/LuaSnip",
+    "chrisgrieser/nvim-scissors",
   },
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
+    local snippet_loader = require("luasnip.loaders.from_vscode")
+    local scissors = require("scissors")
+
+    snippet_loader.lazy_load({
+      paths = { vim.fn.stdpath("config") .. "/snippets" },
+    })
+    scissors.setup()
 
     cmp.setup({
       snippet = {
@@ -41,7 +49,7 @@ return {
         end, { "i", "s" }),
       }),
       sources = cmp.config.sources(
-        { { name = "nvim_lsp" }, { name = "luasnip" } },
+        { { name = "nvim_lsp" }, { name = "luasnip" }, { name = "scissors" } },
         { { name = "buffer" }, { name = "path" } }
       ),
     })
@@ -57,4 +65,3 @@ return {
     })
   end,
 }
-
