@@ -1,6 +1,5 @@
 local fzf = require("fzf-lua")
 local map = vim.keymap.set
-local mapOld = vim.api.nvim_set_keymap
 local fzf_options = require("plugins.fzf")
 
 -- =========================
@@ -148,6 +147,10 @@ map({ "n", "v", "i", "t" }, "<C-z>", "<Nop>", { desc = "Disable suspend" })
 
 -- Paste without overwriting register
 map("v", "p", '"_dP', { desc = "Paste without overwriting register" })
+
+-- Quick escape from insert mode
+map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
+map("i", "kj", "<Esc>", { desc = "Exit insert mode" })
 
 -- increase resize steps
 vim.keymap.set("n", "<C-w>+", "<cmd>resize +5<CR>", { silent = true })
