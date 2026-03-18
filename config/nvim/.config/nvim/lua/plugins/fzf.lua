@@ -1,14 +1,14 @@
 local file_opts = {
   hidden = true,
   follow = true,
-  no_ignore = false, -- respect .gitignore
+  no_ignore = false,
   fd_opts = "--type f --exclude .git",
   previewer = "builtin",
 }
 
 local grep_opts = {
   hidden = true,
-  no_ignore = false, -- respect .gitignore
+  no_ignore = false,
   rg_opts = table.concat({
     "--column",
     "--line-number",
@@ -22,8 +22,10 @@ local grep_opts = {
 local plugin_spec = {
   {
     "ibhagwan/fzf-lua",
+    lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
+      ui_select = true,
       keymap = {
         fzf = {
           ["tab"] = "down",
@@ -34,8 +36,11 @@ local plugin_spec = {
         preview = {
           layout = "vertical",
         },
-      }
+      },
     },
+    config = function(_, opts)
+      require("fzf-lua").setup(opts)
+    end,
   },
 }
 
