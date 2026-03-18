@@ -22,8 +22,17 @@ return {
         },
         ts_ls = {},
         eslint = {},
+        graphql = {
+          filetypes = {
+            "graphql",
+            "gql",
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+          },
+        },
       }
-
       for server_name in pairs(servers) do
         local server_opts = vim.tbl_deep_extend(
           "force",
