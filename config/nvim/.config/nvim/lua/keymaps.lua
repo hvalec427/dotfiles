@@ -103,6 +103,8 @@ map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Git
 
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 
+map("n", "grd", vim.lsp.buf.definition, { desc = "Go to [d]efinition (LSP)" })
+
 map("n", "grr", function()
   fzf.lsp_references()
 end, { desc = "LSP references (FZF)" })
