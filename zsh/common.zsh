@@ -37,4 +37,4 @@ alias cat="bat"
 # start tmux sessions scripts
 alias tmuxdot="$PUBLIC_TMUX_SESSIONS/dotfiles.sh"
 alias lg="lazygit"
-alias vim="nvim"
+alias v="nvim"
