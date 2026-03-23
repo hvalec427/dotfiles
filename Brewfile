@@ -23,6 +23,7 @@ cask "amethyst"
 brew "eza"
 brew "zoxide"
 brew "bat"
+brew "mole"
 
 # Coding
 brew "cocoapods"
