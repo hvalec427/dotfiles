@@ -38,7 +38,10 @@ map("v", "<leader>fw", function()
 end, { desc = "[f]ind selected [w]ord" })
 
 map("n", "<leader>fg", function()
-  fzf.live_grep(grep_opts)
+  fzf.live_grep(grep_opts, {
+    no_resume = true,
+    search = "",
+  })
 end, { desc = "[f]uzzy [g]rep (respect .gitignore)" })
 
 map("n", "<leader><leader>", function()
