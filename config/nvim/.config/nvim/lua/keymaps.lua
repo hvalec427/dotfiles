@@ -5,6 +5,10 @@ local map = vim.keymap.set
 -- =========================
 
 map("n", "ff", function() require("fff").find_files() end, { desc = "[f]ind [f]iles (fff)" })
+map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h")) end, { desc = "[f]ind in current [d]ir (fff)" })
+map("n", "fs", function()
+  require("fff").find_files({ query = "git:modified" })
+end, { desc = "[f]ile [s]tatus (git changed)" })
 map("n", "fg", function()
   local before_wins = {}
   for _, w in ipairs(vim.api.nvim_list_wins()) do
