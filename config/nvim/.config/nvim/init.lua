@@ -25,7 +25,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   require("plugins.theme"),
   require("plugins.treesitter"),
-  require("plugins.fzf"),
   require("plugins.lualine"),
   require("plugins.cmp"),
   require("plugins.copilot"),
@@ -36,6 +35,7 @@ require("lazy").setup({
   require("plugins.whichkey"),
   require("plugins.conform"),
   require("plugins.neo-tree"),
+  require("plugins.fff"),
 })
 
 -- =========================

@@ -1,52 +1,63 @@
-local fzf = require("fzf-lua")
 local map = vim.keymap.set
-local fzf_options = require("plugins.fzf")
 
 -- =========================
--- Shared FZF options (defined in plugins.fzf)
+-- fff pickers
 -- =========================
 
-local file_opts = fzf_options.file_opts
-local grep_opts = fzf_options.grep_opts
+map("n", "ff", function() require("fff").find_files() end, { desc = "[f]ind [f]iles (fff)" })
+map("n", "fg", function()
+  local before_wins = {}
+  for _, w in ipairs(vim.api.nvim_list_wins()) do
+    before_wins[w] = true
+  end
 
--- =========================
--- FZF pickers
--- =========================
+  require("fff").live_grep()
 
-map("n", "<leader>ff", function()
-  fzf.files(file_opts)
-end, { desc = "[f]ind [f]iles (project files)" })
+  if _G._fff_last_grep_query then
+    vim.defer_fn(function()
+      vim.api.nvim_input(_G._fff_last_grep_query)
+    end, 100)
 
-map("n", "<leader>fh", function()
-  fzf.help_tags()
-end, { desc = "[f]ind [h]elp" })
+    -- After query is fed, set up clear-on-first-keypress via buffer-local keymaps.
+    -- Works if fff's prompt is a normal vim insert-mode buffer.
+    vim.defer_fn(function()
+      local buf = vim.api.nvim_get_current_buf()
+      local chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      local function remove_all()
+        for i = 1, #chars do
+          pcall(vim.keymap.del, 'i', chars:sub(i, i), { buffer = buf })
+        end
+      end
+      for i = 1, #chars do
+        local c = chars:sub(i, i)
+        vim.keymap.set('i', c, function()
+          remove_all()
+          return '<C-u>' .. c
+        end, { buffer = buf, expr = true, nowait = true })
+      end
+    end, 150)
+  end
 
-map("n", "<leader>fk", function()
-  fzf.keymaps()
-end, { desc = "[f]ind [k]eymaps" })
-
-map("n", "<leader>fd", function()
-  fzf.lsp_definitions()
-end, { desc = "[f]ind [d]efinitions" })
-
-map("n", "<leader>fw", function()
-  fzf.grep_cword(grep_opts)
-end, { desc = "[f]ind [w]ord" })
-
-map("v", "<leader>fw", function()
-  fzf.grep_visual(grep_opts)
-end, { desc = "[f]ind selected [w]ord" })
-
-map("n", "<leader>fg", function()
-  fzf.live_grep(grep_opts, {
-    no_resume = true,
-    search = "",
-  })
-end, { desc = "[f]uzzy [g]rep (respect .gitignore)" })
-
-map("n", "<leader><leader>", function()
-  fzf.buffers()
-end, { desc = "FZF current [b]uffers" })
+  -- find the new floating window fff just opened and watch it close
+  vim.defer_fn(function()
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+      if not before_wins[w] then
+        vim.api.nvim_create_autocmd("WinClosed", {
+          pattern = tostring(w),
+          once = true,
+          callback = function()
+            local ok, picker_ui = pcall(require, "fff.picker_ui")
+            if ok and picker_ui.state and type(picker_ui.state.query) == "string" and picker_ui.state.query ~= "" then
+              _G._fff_last_grep_query = picker_ui.state.query
+            end
+          end,
+        })
+        break
+      end
+    end
+  end, 50)
+end, { desc = "Live [g]rep, resume last query (fff)" })
+map("n", "fw", function() require("fff").live_grep({ query = vim.fn.expand("<cword>") }) end, { desc = "[g]rep current [w]ord (fff)" })
 
 -- =========================
 -- Neo-tree
@@ -60,11 +71,7 @@ end, { desc = "[n]eo-tree toggle" })
 -- Git
 -- =========================
 
-map("n", "<leader>fs", function()
-  fzf.git_status({
-    previewer = "git_diff",
-  })
-end, { desc = "[f]ile [s]tatus (Git status picker)" })
+-- Removed fzf-lua Git status mapping
 
 local function close_diff_windows()
   local ok, lib = pcall(require, "diffview.lib")
@@ -108,10 +115,7 @@ map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 
 map("n", "grd", vim.lsp.buf.definition, { desc = "Go to [d]efinition (LSP)" })
 
-map("n", "grr", function()
-  fzf.lsp_references()
-end, { desc = "LSP references (FZF)" })
-
+-- Use built-in references mapping only
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (built-in)" })
 
 -- =========================
@@ -139,9 +143,8 @@ end, { desc = "Buffer local keymaps (which-key)" })
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Expand diagnostic" })
 
-map("n", "<leader>ca", function()
-  fzf.lsp_code_actions()
-end, { desc = "Code actions" })
+-- Use built-in code actions
+map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" })
 
 -- =========================
 -- Misc
