@@ -7,7 +7,21 @@ local map = vim.keymap.set
 map("n", "ff", function() require("fff").find_files() end, { desc = "[f]ind [f]iles (fff)" })
 map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h")) end, { desc = "[f]ind in current [d]ir (fff)" })
 map("n", "fs", function()
-  require("fff").find_files({ query = "git:modified" })
+  require("fff").find_files({
+    query = "git:modified",
+    preview_fn = function(item, bufnr, _win)
+      local file = item.relative_path or item.path or ""
+      local diff = vim.fn.systemlist("git diff HEAD -- " .. vim.fn.shellescape(file))
+      if #diff == 0 then
+        diff = vim.fn.systemlist("git diff --cached -- " .. vim.fn.shellescape(file))
+      end
+      if #diff == 0 then diff = { "(no diff)" } end
+      vim.api.nvim_set_option_value("modifiable", true, { buf = bufnr })
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, diff)
+      vim.api.nvim_set_option_value("modifiable", false, { buf = bufnr })
+      vim.api.nvim_set_option_value("filetype", "diff", { buf = bufnr })
+    end,
+  })
 end, { desc = "[f]ile [s]tatus (git changed)" })
 map("n", "fg", function()
   local before_wins = {}
