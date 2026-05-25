@@ -61,7 +61,41 @@ map("n", "fg", function()
     end
   end, 50)
 end, { desc = "Live [g]rep, resume last query (fff)" })
-map("n", "fw", function() require("fff").live_grep({ query = vim.fn.expand("<cword>") }) end, { desc = "[g]rep current [w]ord (fff)" })
+local function fff_grep_with_query(query)
+  local before_wins = {}
+  for _, w in ipairs(vim.api.nvim_list_wins()) do
+    before_wins[w] = true
+  end
+
+  require("fff").live_grep({ query = query })
+
+  vim.defer_fn(function()
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+      if not before_wins[w] then
+        vim.api.nvim_create_autocmd("WinClosed", {
+          pattern = tostring(w),
+          once = true,
+          callback = function()
+            local ok, picker_ui = pcall(require, "fff.picker_ui")
+            if ok and picker_ui.state and type(picker_ui.state.query) == "string" and picker_ui.state.query ~= "" then
+              _G._fff_last_grep_query = picker_ui.state.query
+            end
+          end,
+        })
+        break
+      end
+    end
+  end, 50)
+end
+
+map("n", "fw", function()
+  fff_grep_with_query(vim.fn.expand("<cword>"))
+end, { desc = "[g]rep current [w]ord (fff)" })
+
+map("v", "fw", function()
+  vim.cmd('noau normal! "vy"')
+  fff_grep_with_query(vim.fn.getreg("v"))
+end, { desc = "[g]rep visual selection (fff)" })
 
 -- =========================
 -- Neo-tree
