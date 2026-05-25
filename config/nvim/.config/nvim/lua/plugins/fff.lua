@@ -9,10 +9,12 @@ return {
       prompt_position = 'top',
     },
     keymaps = {
-      move_down     = { '<Down>', '<C-n>', '<Tab>' },
-      move_up       = { '<Up>', '<C-p>', '<S-Tab>' },
-      toggle_select    = '<F13>',
-      cycle_grep_modes = '<F14>',
+      move_down          = { '<C-n>', '<Tab>' },
+      move_up            = { '<C-p>', '<S-Tab>' },
+      preview_scroll_down = '<Down>',
+      preview_scroll_up   = '<Up>',
+      toggle_select      = '<F13>',
+      cycle_grep_modes   = '<F14>',
     },
   },
 }
