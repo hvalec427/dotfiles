@@ -5,17 +5,26 @@ local map = vim.keymap.set
 -- =========================
 
 map("n", "ff", function() require("fff").find_files() end, { desc = "[f]ind [f]iles (fff)" })
-map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h")) end, { desc = "[f]ind in current [d]ir (fff)" })
+map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h")) end,
+  { desc = "[f]ind in current [d]ir (fff)" })
 map("n", "fs", function()
   require("fff").find_files({
     query = "git:modified",
     preview_fn = function(item, bufnr, _win)
+      require("fff.file_picker.preview").state.bufnr = bufnr
       local file = item.relative_path or item.path or ""
       local diff = vim.fn.systemlist("git diff HEAD -- " .. vim.fn.shellescape(file))
       if #diff == 0 then
         diff = vim.fn.systemlist("git diff --cached -- " .. vim.fn.shellescape(file))
       end
       if #diff == 0 then diff = { "(no diff)" } end
+      local filtered = {}
+      local in_hunk = false
+      for _, line in ipairs(diff) do
+        if line:match("^@@") then in_hunk = true end
+        if in_hunk then filtered[#filtered + 1] = line end
+      end
+      if #filtered > 0 then diff = filtered end
       vim.api.nvim_set_option_value("modifiable", true, { buf = bufnr })
       vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, diff)
       vim.api.nvim_set_option_value("modifiable", false, { buf = bufnr })
