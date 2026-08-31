@@ -5,11 +5,10 @@ return {
     require("nvim-treesitter.configs").setup({
       ensure_installed = {
         "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
-        "json", "html", "css", "markdown", "markdown_inline",
+        "json", "html", "css",
       },
-      highlight = { enable = true },
+      highlight = { enable = true, disable = { "markdown" } },
       indent = { enable = true },
     })
   end,
 }
-
