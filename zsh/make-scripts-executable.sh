@@ -9,17 +9,19 @@ TARGET_FILES=()
 changed=0
 missing=0
 
-for file in "${TARGET_FILES[@]}"; do
-  if [ ! -f "$file" ]; then
-    echo "Missing (skipped): $file"
-    missing=$((missing + 1))
-    continue
-  fi
+if [ ${#TARGET_FILES[@]} -gt 0 ]; then
+  for file in "${TARGET_FILES[@]}"; do
+    if [ ! -f "$file" ]; then
+      echo "Missing (skipped): $file"
+      missing=$((missing + 1))
+      continue
+    fi
 
-  echo "file name $file"
-  chmod +x "$file"
-  changed=$((changed + 1))
-done
+    echo "file name $file"
+    chmod +x "$file"
+    changed=$((changed + 1))
+  done
+fi
 
 echo "Made executable: $changed script(s)."
 echo "Missing: $missing file(s)."
