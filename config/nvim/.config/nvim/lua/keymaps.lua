@@ -10,7 +10,7 @@ map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h"
 map("n", "fs", function()
   require("fff").find_files({
     query = "git:modified",
-    preview_fn = function(item, bufnr, _win)
+    preview_fn = function(item, bufnr)
       require("fff.file_picker.preview").state.bufnr = bufnr
       local file = item.relative_path or item.path or ""
       local diff = vim.fn.systemlist("git diff HEAD -- " .. vim.fn.shellescape(file))
