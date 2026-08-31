@@ -180,17 +180,6 @@ map("n", "grd", vim.lsp.buf.definition, { desc = "Go to [d]efinition (LSP)" })
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (built-in)" })
 
 -- =========================
--- Copilot
--- =========================
-
-map(
-  "i",
-  "<C-J>",
-  "copilot#Accept(\"\\<CR>\")",
-  { expr = true, silent = true, noremap = false, replace_keycodes = false }
-)
-
--- =========================
 -- Which-key
 -- =========================
 
