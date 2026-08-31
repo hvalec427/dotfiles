@@ -1,0 +1,11 @@
+name: dev
+
+windows:
+  - main:
+      layout: main-vertical
+      panes:
+        - nvim
+        -
+        -
+  - claude: claude
+  - lazygit: lazygit

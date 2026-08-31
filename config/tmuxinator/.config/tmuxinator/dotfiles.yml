@@ -1,0 +1,7 @@
+name: dotfiles
+root: ~/dev/dotfiles
+
+windows:
+  - editor: nvim
+  - claude: claude
+  - lazygit: lazygit

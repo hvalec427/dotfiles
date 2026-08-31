@@ -48,6 +48,11 @@ if [ ${#PACKAGES[@]} -eq 0 ]; then
 else
   command -v stow >/dev/null || { log "installing stow"; brew install stow; }
 
+  for d in "$DIR"/config/*/.config/*; do
+    [ -d "$d" ] || continue
+    mkdir -p "$HOME/.config/$(basename "$d")"
+  done
+
   cd "$DIR"
   for pkg in "${PACKAGES[@]}"; do
     log "stowing: $pkg"

@@ -21,7 +21,6 @@ export PYENV_ROOT="$HOME/.pyenv"
 eval "$(pyenv init - zsh)"
 
 DOTFILES_ROOT="$HOME/dev/dotfiles"
-PUBLIC_TMUX_SESSIONS="$DOTFILES_ROOT/tmux/sessions"
 PRIVATE_TMUX_SESSIONS="$DOTFILES_ROOT/private/tmux/sessions"
 
 alias ls="eza"
@@ -34,7 +33,7 @@ alias cd="z"
 
 alias cat="bat"
 
-# start tmux sessions scripts
-alias tmuxdot="$PUBLIC_TMUX_SESSIONS/dotfiles.sh"
+alias s="sesh picker -i"
 alias lg="lazygit"
 alias v="nvim"
+alias wip="tmuxinator start dev -n"
