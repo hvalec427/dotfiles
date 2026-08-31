@@ -4,9 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-TARGET_FILES=(
-  "$REPO_ROOT/tmux/sessions/dotfiles.sh"
-)
+TARGET_FILES=()
 
 changed=0
 missing=0
