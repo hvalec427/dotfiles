@@ -46,6 +46,9 @@ return {
         ensure_installed = vim.tbl_keys(servers),
         automatic_installation = true,
       })
+
+      -- vim.lsp.config() only registers config; enable() actually starts the servers
+      vim.lsp.enable(vim.tbl_keys(servers))
     end,
   },
 }
