@@ -2,6 +2,8 @@
 
 ## New machine setup
 
+Generate an API key at [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys), then store it in the macOS keychain:
+
 ```sh
 security add-generic-password -a "$USER" -s ANTHROPIC_API_KEY -w "sk-ant-..."
 ```
