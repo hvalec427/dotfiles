@@ -1,12 +1,18 @@
 return {
   "milanglacier/minuet-ai.nvim",
-  event = "InsertEnter",
+  event = { "BufReadPre", "BufNewFile" },
   main = "minuet",
   opts = {
     provider = "claude",
     provider_options = {
       claude = {
         model = "claude-haiku-4-5",
+        api_key = function()
+          return vim.trim(vim.fn.system({
+            "security", "find-generic-password",
+            "-a", vim.env.USER, "-s", "ANTHROPIC_API_KEY", "-w",
+          }))
+        end,
       },
     },
     virtualtext = {
