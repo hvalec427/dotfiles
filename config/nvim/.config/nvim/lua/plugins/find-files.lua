@@ -4,6 +4,16 @@ return {
     require('fff.download').download_or_build_binary()
   end,
   lazy = false,
+  init = function()
+    local ts_start = vim.treesitter.start
+    vim.treesitter.start = function(bufnr, lang)
+      if lang == 'markdown' or lang == 'markdown_inline' then
+        local ok, name = pcall(vim.api.nvim_buf_get_name, bufnr or 0)
+        if ok and name:match('fffile preview$') then return end
+      end
+      return ts_start(bufnr, lang)
+    end
+  end,
   opts = {
     layout = {
       prompt_position = 'top',
