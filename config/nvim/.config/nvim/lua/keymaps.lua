@@ -23,7 +23,44 @@ end, { desc = "[f]ind [f]iles (incl. hidden)" })
 map("n", "fr", function() require("mini.pick").builtin.resume() end, { desc = "[f]ind [r]esume last picker" })
 local mru = require("mru")
 mru.setup() -- still powers the <leader>[ / <leader>] cycle below
-map("n", "<leader><space>", function() require("mini.pick").builtin.buffers() end, { desc = "Open buffers" })
+map("n", "<leader><space>", function()
+  local pick = require("mini.pick")
+  local cur = vim.api.nvim_get_current_buf()
+  local alt = vim.fn.bufnr("#")
+  local infos = vim.fn.getbufinfo({ buflisted = 1 })
+  table.sort(infos, function(a, b) return a.lastused > b.lastused end)
+
+  -- Front order: alternate, then current, then the rest most-recently-used.
+  -- So with recency 1,2,3 and current 1, the list reads 2 1 3 -- the previous
+  -- buffer sits on top for an instant <CR>.
+  local order, seen = {}, {}
+  local function push(bufnr)
+    if bufnr and bufnr > 0 and not seen[bufnr] and vim.fn.buflisted(bufnr) == 1 then
+      seen[bufnr] = true
+      order[#order + 1] = bufnr
+    end
+  end
+  push(alt)
+  push(cur)
+  for _, info in ipairs(infos) do push(info.bufnr) end
+
+  local items = {}
+  for _, bufnr in ipairs(order) do
+    local n = vim.api.nvim_buf_get_name(bufnr)
+    local name = n ~= "" and vim.fn.fnamemodify(n, ":~:.") or "[No Name]"
+    items[#items + 1] = { text = name, bufnr = bufnr }
+  end
+
+  pick.start({
+    source = {
+      name = "Buffers (MRU)",
+      items = items,
+      show = function(buf_id, its, query)
+        pick.default_show(buf_id, its, query, { show_icons = true })
+      end,
+    },
+  })
+end, { desc = "Open buffers (MRU)" })
 map("n", "<leader>[", function() mru.cycle(1) end, { desc = "Cycle to older recent file" })
 map("n", "<leader>]", function() mru.cycle(-1) end, { desc = "Cycle to newer recent file" })
 map("n", "<Tab>", "<cmd>e #<CR>", { desc = "Toggle alternate file" })
