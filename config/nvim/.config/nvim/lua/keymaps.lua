@@ -5,6 +5,12 @@ local map = vim.keymap.set
 -- =========================
 
 map("n", "ff", function() require("fff").find_files() end, { desc = "[f]ind [f]iles (fff)" })
+local mru = require("mru")
+mru.setup()
+map("n", "<leader><space>", mru.pick, { desc = "Recent files (MRU list)" })
+map("n", "<leader>[", function() mru.cycle(1) end, { desc = "Cycle to older recent file" })
+map("n", "<leader>]", function() mru.cycle(-1) end, { desc = "Cycle to newer recent file" })
+map("n", "<Tab>", "<cmd>e #<CR>", { desc = "Toggle alternate file" })
 map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h")) end,
   { desc = "[f]ind in current [d]ir (fff)" })
 map("n", "fs", function()
@@ -195,6 +201,18 @@ map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Expand diagnostic" })
 
 -- Use built-in code actions
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" })
+
+-- =========================
+-- Movement
+-- =========================
+
+map("n", "<C-d>", "<C-d>zz", { desc = "Half-page down, centered" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Half-page up, centered" })
+map("n", "<C-f>", "<C-f>zz", { desc = "Full-page down, centered" })
+map("n", "<C-b>", "<C-b>zz", { desc = "Full-page up, centered" })
+
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- =========================
 -- Misc
