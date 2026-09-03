@@ -15,5 +15,4 @@ return {
       vim.cmd("colorscheme sonokai")
     end,
   },
-  { "nvim-tree/nvim-web-devicons", lazy = true },
 }

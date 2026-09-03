@@ -7,6 +7,7 @@ return {
     "hrsh7th/cmp-cmdline",
     "saadparwaiz1/cmp_luasnip",
     "L3MON4D3/LuaSnip",
+    "rafamadriz/friendly-snippets",
     "chrisgrieser/nvim-scissors",
   },
   config = function()
@@ -15,6 +16,9 @@ return {
     local snippet_loader = require("luasnip.loaders.from_vscode")
     local scissors = require("scissors")
 
+    -- Load the friendly-snippets collection (vscode-format, from runtimepath)
+    snippet_loader.lazy_load()
+    -- Plus your own snippets under ~/.config/nvim/snippets
     snippet_loader.lazy_load({
       paths = { vim.fn.stdpath("config") .. "/snippets" },
     })
