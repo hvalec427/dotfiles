@@ -215,6 +215,20 @@ map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- =========================
+-- Terminal runners
+-- =========================
+
+local new_runner = require("runner").new_runner
+
+local lazygit = new_runner("lazygit", { floating = true })
+vim.api.nvim_create_user_command("LazyGit", lazygit, {})
+map({ "n", "x" }, "<leader>l", lazygit, { desc = "LazyGit (floating)" })
+
+local scooter = new_runner("scooter", { floating = true })
+vim.api.nvim_create_user_command("Scooter", scooter, {})
+map({ "n", "x" }, "<leader>s", scooter, { desc = "Scooter find/replace (floating)" })
+
+-- =========================
 -- Misc
 -- =========================
 
