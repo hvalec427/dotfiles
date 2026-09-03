@@ -49,6 +49,7 @@
       "type": "disk",
       "key": "Disk",
       "keyColor": "cyan",
+      "folders": "/",
       "format": "{size-total}"
     },
     {
