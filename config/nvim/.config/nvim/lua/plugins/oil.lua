@@ -3,6 +3,26 @@ return {
   dependencies = { "nvim-mini/mini.icons" },
   lazy = false,
   config = function()
+    -- Close oil, but if there are unsaved edits ask to Save / Discard / Cancel.
+    local function close_with_prompt()
+      local close = function() require("oil.actions").close.callback() end
+      if not vim.bo.modified then
+        close()
+        return
+      end
+      local choice = vim.fn.confirm("You have unsaved changes.", "&Save\n&Discard\n&Cancel", 3)
+      if choice == 1 then -- Save
+        require("oil").save({ confirm = false }, function(err)
+          if not err or err == "Canceled" then
+            vim.schedule(close)
+          end
+        end)
+      elseif choice == 2 then -- Discard
+        close()
+      end
+      -- choice == 3 or 0 (Cancel): stay in oil
+    end
+
     require("oil").setup({
       default_file_explorer = true,
       delete_to_trash = true,
@@ -17,8 +37,8 @@ return {
         border = "rounded",
       },
       keymaps = {
-        ["q"] = "actions.close",
-        ["<Esc>"] = "actions.close",
+        ["q"] = close_with_prompt,
+        ["<Esc>"] = close_with_prompt,
       },
     })
   end,

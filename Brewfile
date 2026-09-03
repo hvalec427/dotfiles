@@ -30,6 +30,7 @@ brew "cocoapods"
 cask "homebrew/cask/codex"
 brew "lazygit"
 brew "neovim"
+brew "tree-sitter-cli" # required by nvim-treesitter (main branch) to compile parsers
 brew "fzf"
 brew "sesh"
 brew "tmuxinator"
