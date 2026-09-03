@@ -39,4 +39,19 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
+-- Experimental Neovim 0.12 message + cmdline UI (vim._core.ui2).
+-- pcall-guarded so older Neovim (without this module) still loads cleanly.
+pcall(function()
+  require("vim._core.ui2").enable({
+    enable = true,
+    msg = {
+      targets = "cmd",                    -- default message target: the cmdline
+      cmd = { height = 0.5 },             -- max height when expanded past 'cmdheight'
+      dialog = { height = 0.5 },          -- modal prompt window
+      msg = { height = 0.5, timeout = 4000 }, -- ephemeral message window
+      pager = { height = 1 },             -- :messages / non-collapsed messages
+    },
+  })
+end)
+
 return {}
