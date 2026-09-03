@@ -24,6 +24,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Each module returns a list or a single plugin spec.
 require("lazy").setup({
   require("plugins.theme"),
+  require("plugins.icons"),
   require("plugins.treesitter"),
   require("plugins.lualine"),
   require("plugins.cmp"),
@@ -33,7 +34,7 @@ require("lazy").setup({
   require("plugins.navigator"),
   require("plugins.whichkey"),
   require("plugins.conform"),
-  require("plugins.neo-tree"),
+  require("plugins.oil"),
   require("plugins.find-files"),
   require("plugins.minuet"),
 })
@@ -50,12 +51,11 @@ vim.api.nvim_create_autocmd("BufEnter", {
   desc = "Close Neovim when only sidebar windows remain",
   callback = function()
     local wins = vim.api.nvim_tabpage_list_wins(0)
-    -- neo-tree handles if there is only a single window left
     if #wins == 1 and vim.bo[vim.api.nvim_win_get_buf(wins[1])].filetype ~= "aerial" then
       return
     end
 
-    local sidebar_fts = { aerial = true, ["neo-tree"] = true }
+    local sidebar_fts = { aerial = true }
     for _, winid in ipairs(wins) do
       if vim.api.nvim_win_is_valid(winid) then
         local bufnr = vim.api.nvim_win_get_buf(winid)
