@@ -1,130 +1,35 @@
 local map = vim.keymap.set
 
 -- =========================
--- fff pickers
+-- mini.pick pickers
 -- =========================
 
-map("n", "ff", function() require("fff").find_files() end, { desc = "[f]ind [f]iles (fff)" })
+map("n", "ff", function() require("mini.pick").builtin.files() end, { desc = "[f]ind [f]iles" })
 local mru = require("mru")
 mru.setup()
 map("n", "<leader><space>", mru.pick, { desc = "Recent files (MRU list)" })
 map("n", "<leader>[", function() mru.cycle(1) end, { desc = "Cycle to older recent file" })
 map("n", "<leader>]", function() mru.cycle(-1) end, { desc = "Cycle to newer recent file" })
 map("n", "<Tab>", "<cmd>e #<CR>", { desc = "Toggle alternate file" })
-map("n", "fd", function() require("fff").find_files_in_dir(vim.fn.expand("%:p:h")) end,
-  { desc = "[f]ind in current [d]ir (fff)" })
+
+map("n", "fd", function()
+  require("mini.pick").builtin.files(nil, { source = { cwd = vim.fn.expand("%:p:h") } })
+end, { desc = "[f]ind in current [d]ir" })
+
 map("n", "fs", function()
-  require("fff").find_files({
-    query = "git:modified",
-    preview_fn = function(item, bufnr)
-      require("fff.file_picker.preview").state.bufnr = bufnr
-      local file = item.relative_path or item.path or ""
-      local diff = vim.fn.systemlist("git diff HEAD -- " .. vim.fn.shellescape(file))
-      if #diff == 0 then
-        diff = vim.fn.systemlist("git diff --cached -- " .. vim.fn.shellescape(file))
-      end
-      if #diff == 0 then diff = { "(no diff)" } end
-      local filtered = {}
-      local in_hunk = false
-      for _, line in ipairs(diff) do
-        if line:match("^@@") then in_hunk = true end
-        if in_hunk then filtered[#filtered + 1] = line end
-      end
-      if #filtered > 0 then diff = filtered end
-      vim.api.nvim_set_option_value("modifiable", true, { buf = bufnr })
-      vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, diff)
-      vim.api.nvim_set_option_value("modifiable", false, { buf = bufnr })
-      vim.api.nvim_set_option_value("filetype", "diff", { buf = bufnr })
-    end,
-  })
+  require("mini.extra").pickers.git_files({ scope = "modified" })
 end, { desc = "[f]ile [s]tatus (git changed)" })
-map("n", "fg", function()
-  local before_wins = {}
-  for _, w in ipairs(vim.api.nvim_list_wins()) do
-    before_wins[w] = true
-  end
 
-  require("fff").live_grep()
-
-  if _G._fff_last_grep_query then
-    vim.defer_fn(function()
-      vim.api.nvim_input(_G._fff_last_grep_query)
-    end, 100)
-
-    -- After query is fed, set up clear-on-first-keypress via buffer-local keymaps.
-    -- Works if fff's prompt is a normal vim insert-mode buffer.
-    vim.defer_fn(function()
-      local buf = vim.api.nvim_get_current_buf()
-      local chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-      local function remove_all()
-        for i = 1, #chars do
-          pcall(vim.keymap.del, 'i', chars:sub(i, i), { buffer = buf })
-        end
-      end
-      for i = 1, #chars do
-        local c = chars:sub(i, i)
-        vim.keymap.set('i', c, function()
-          remove_all()
-          return '<C-u>' .. c
-        end, { buffer = buf, expr = true, nowait = true })
-      end
-    end, 150)
-  end
-
-  -- find the new floating window fff just opened and watch it close
-  vim.defer_fn(function()
-    for _, w in ipairs(vim.api.nvim_list_wins()) do
-      if not before_wins[w] then
-        vim.api.nvim_create_autocmd("WinClosed", {
-          pattern = tostring(w),
-          once = true,
-          callback = function()
-            local ok, picker_ui = pcall(require, "fff.picker_ui")
-            if ok and picker_ui.state and type(picker_ui.state.query) == "string" and picker_ui.state.query ~= "" then
-              _G._fff_last_grep_query = picker_ui.state.query
-            end
-          end,
-        })
-        break
-      end
-    end
-  end, 50)
-end, { desc = "Live [g]rep, resume last query (fff)" })
-local function fff_grep_with_query(query)
-  local before_wins = {}
-  for _, w in ipairs(vim.api.nvim_list_wins()) do
-    before_wins[w] = true
-  end
-
-  require("fff").live_grep({ query = query })
-
-  vim.defer_fn(function()
-    for _, w in ipairs(vim.api.nvim_list_wins()) do
-      if not before_wins[w] then
-        vim.api.nvim_create_autocmd("WinClosed", {
-          pattern = tostring(w),
-          once = true,
-          callback = function()
-            local ok, picker_ui = pcall(require, "fff.picker_ui")
-            if ok and picker_ui.state and type(picker_ui.state.query) == "string" and picker_ui.state.query ~= "" then
-              _G._fff_last_grep_query = picker_ui.state.query
-            end
-          end,
-        })
-        break
-      end
-    end
-  end, 50)
-end
+map("n", "fg", function() require("mini.pick").builtin.grep_live() end, { desc = "Live [g]rep" })
 
 map("n", "fw", function()
-  fff_grep_with_query(vim.fn.expand("<cword>"))
-end, { desc = "[g]rep current [w]ord (fff)" })
+  require("mini.pick").builtin.grep({ pattern = vim.fn.expand("<cword>") })
+end, { desc = "[g]rep current [w]ord" })
 
 map("v", "fw", function()
   vim.cmd('noau normal! "vy"')
-  fff_grep_with_query(vim.fn.getreg("v"))
-end, { desc = "[g]rep visual selection (fff)" })
+  require("mini.pick").builtin.grep({ pattern = vim.fn.getreg("v") })
+end, { desc = "[g]rep visual selection" })
 
 -- =========================
 -- Oil (file explorer)

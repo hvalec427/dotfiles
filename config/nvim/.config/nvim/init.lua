@@ -35,7 +35,7 @@ require("lazy").setup({
   require("plugins.whichkey"),
   require("plugins.conform"),
   require("plugins.oil"),
-  require("plugins.find-files"),
+  require("plugins.pick"),
   require("plugins.minuet"),
 })
 

@@ -31,6 +31,7 @@ cask "homebrew/cask/codex"
 brew "lazygit"
 brew "neovim"
 brew "tree-sitter-cli" # required by nvim-treesitter (main branch) to compile parsers
+brew "ripgrep" # used by mini.pick for file finding and live grep
 brew "fzf"
 brew "sesh"
 brew "tmuxinator"
