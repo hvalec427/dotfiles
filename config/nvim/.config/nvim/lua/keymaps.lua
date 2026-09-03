@@ -4,7 +4,23 @@ local map = vim.keymap.set
 -- mini.pick pickers
 -- =========================
 
-map("n", "ff", function() require("mini.pick").builtin.files() end, { desc = "[f]ind [f]iles" })
+-- Find files including hidden ones (rg skips hidden files AND dirs by default,
+-- which hides everything under paths like .config/). Exclude the .git dir.
+map("n", "ff", function()
+  local pick = require("mini.pick")
+  pick.builtin.cli(
+    { command = { "rg", "--files", "--hidden", "--glob", "!.git", "--color=never" } },
+    {
+      source = {
+        name = "Files (incl. hidden)",
+        show = function(buf_id, items, query)
+          pick.default_show(buf_id, items, query, { show_icons = true })
+        end,
+      },
+    }
+  )
+end, { desc = "[f]ind [f]iles (incl. hidden)" })
+map("n", "fr", function() require("mini.pick").builtin.resume() end, { desc = "[f]ind [r]esume last picker" })
 local mru = require("mru")
 mru.setup()
 map("n", "<leader><space>", mru.pick, { desc = "Recent files (MRU list)" })
