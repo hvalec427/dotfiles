@@ -222,6 +222,12 @@ map("v", "p", '"_dP', { desc = "Paste without overwriting register" })
 map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 map("i", "kj", "<Esc>", { desc = "Exit insert mode" })
 
+-- Navigate out of terminal windows (incl. Claude pane) without <C-\><C-n>
+vim.keymap.set("t", "<C-h>", [[<Cmd>TmuxNavigateLeft<CR>]], { silent = true })
+vim.keymap.set("t", "<C-j>", [[<Cmd>TmuxNavigateDown<CR>]], { silent = true })
+vim.keymap.set("t", "<C-k>", [[<Cmd>TmuxNavigateUp<CR>]], { silent = true })
+vim.keymap.set("t", "<C-l>", [[<Cmd>TmuxNavigateRight<CR>]], { silent = true })
+
 -- increase resize steps
 vim.keymap.set("n", "<C-w>+", "<cmd>resize +5<CR>", { silent = true })
 vim.keymap.set("n", "<C-w>-", "<cmd>resize -5<CR>", { silent = true })
