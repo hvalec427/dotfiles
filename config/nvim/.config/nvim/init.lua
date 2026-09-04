@@ -29,6 +29,7 @@ require("lazy").setup({
   require("plugins.lualine"),
   require("plugins.autopairs"),
   require("plugins.lsp"),
+  require("plugins.blink"),
   require("plugins.git_tools"),
   require("plugins.navigator"),
   require("plugins.whichkey"),
