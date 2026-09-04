@@ -3,5 +3,5 @@ root: ~/dev/dotfiles
 
 windows:
   - editor: nvim
-  - claude: claude
-  - lazygit: lazygit
+  - shell:
+  - shell:
