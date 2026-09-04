@@ -39,8 +39,12 @@ return {
           return "<Ignore>"
         end, { expr = true, desc = "Prev hunk" })
 
-        -- Hunk inspection (staging/reset is done in lazygit)
+        -- Hunk inspection + revert (staging is done in lazygit)
         map("n", "<leader>hp", gs.preview_hunk, { desc = "[h]unk [p]review" })
+        map("n", "<leader>hr", gs.reset_hunk, { desc = "[h]unk [r]evert" })
+        map("v", "<leader>hr", function()
+          gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+        end, { desc = "[h]unk [r]evert (selection)" })
         map("n", "<leader>hb", function()
           gs.blame_line({ full = true })
         end, { desc = "[h]unk [b]lame line" })
