@@ -180,6 +180,15 @@ vim.api.nvim_create_user_command("LazyGit", lazygit, {})
 map({ "n", "x" }, "<leader>l", lazygit, { desc = "LazyGit (floating)" })
 
 -- =========================
+-- Completion (native LSP popup)
+-- =========================
+
+-- Tab / Shift-Tab navigate the completion popup when it's visible,
+-- otherwise insert a literal Tab. Confirm a selection with <C-y>.
+map("i", "<Tab>", function() return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true })
+map("i", "<S-Tab>", function() return vim.fn.pumvisible() == 1 and "<C-p>" or "<S-Tab>" end, { expr = true })
+
+-- =========================
 -- Misc
 -- =========================
 
