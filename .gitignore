@@ -1,3 +1,4 @@
 .DS_store
 /config/tmux/.config/tmux/plugins/*
 /config/nvim/.config/nvim/.nvimlog
+/config/karabiner/.config/karabiner/automatic_backups/
