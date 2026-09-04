@@ -65,3 +65,11 @@ New panes open in the current pane's directory.
 |-----|--------|
 | `Ctrl-w` `q` | close current split |
 | `Ctrl-w` `o` | close all other panes |
+
+## nvim — search & replace
+
+| Command | Action |
+|---------|--------|
+| `:%s/Waldo/Wizard Whitebeard/gc` | replace every `Waldo` with `Wizard Whitebeard` in the file, confirming each (`c`) |
+| `<leader>rn` | LSP rename symbol under cursor (across the project) |
+
