@@ -66,8 +66,34 @@ map("n", "fd", function()
 end, { desc = "[f]ind in current [d]ir" })
 
 map("n", "fs", function()
-  require("mini.extra").pickers.git_files({ scope = "modified" })
-end, { desc = "[f]ile [s]tatus (git changed)" })
+  local root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+  if vim.v.shell_error ~= 0 or not root or root == "" then
+    vim.notify("Not in a git repository", vim.log.levels.WARN)
+    return
+  end
+  -- `git status --porcelain` includes modified, staged, AND untracked files
+  local lines = vim.fn.systemlist({ "git", "-C", root, "status", "--porcelain", "-uall" })
+  local seen, items = {}, {}
+  for _, line in ipairs(lines) do
+    -- strip the 2-char status code + space, handle "old -> new" renames
+    local path = line:sub(4):gsub('^"', ""):gsub('"$', "")
+    path = path:match("%->%s*(.*)$") or path
+    if path ~= "" and not seen[path] then
+      seen[path] = true
+      items[#items + 1] = path
+    end
+  end
+  require("mini.pick").start({
+    source = {
+      name = "Git status",
+      items = items,
+      cwd = root,
+      choose = function(item)
+        vim.cmd("edit " .. vim.fn.fnameescape(root .. "/" .. item))
+      end,
+    },
+  })
+end, { desc = "[f]ile [s]tatus (git changed + new)" })
 
 map("n", "fg", function() require("mini.pick").builtin.grep_live() end, { desc = "Live [g]rep" })
 
