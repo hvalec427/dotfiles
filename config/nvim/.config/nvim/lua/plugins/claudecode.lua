@@ -19,6 +19,14 @@ return {
               mode = "t",
               desc = "Hide Claude",
             },
+            claude_hide_w = {
+              "<C-w>",
+              function(self)
+                self:hide()
+              end,
+              mode = "t",
+              desc = "Hide Claude",
+            },
           },
         },
       },
@@ -40,7 +48,6 @@ return {
       "ClaudeCodeCloseAllDiffs",
     },
     keys = {
-      { "<leader>a", nil, desc = "AI/Claude Code" },
       { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
       { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
       { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
