@@ -18,6 +18,9 @@ return {
           end
         end)
       elseif choice == 2 then -- Discard
+        -- Floating oil only closes the window, keeping the buffer (and its
+        -- pending mutations) alive, so reset it to the on-disk state first.
+        require("oil").discard_all_changes()
         close()
       end
       -- choice == 3 or 0 (Cancel): stay in oil
