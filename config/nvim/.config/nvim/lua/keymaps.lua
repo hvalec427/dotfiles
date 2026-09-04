@@ -155,6 +155,11 @@ map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Expand diagnostic" })
 -- Use built-in code actions
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" })
 
+-- Format the whole file (normal) or just the selection (visual) via conform
+map({ "n", "x" }, "<leader>cf", function()
+  require("conform").format({ async = true, lsp_format = "fallback" })
+end, { desc = "[c]ode [f]ormat (file / selection)" })
+
 -- =========================
 -- Movement
 -- =========================
