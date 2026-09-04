@@ -48,6 +48,15 @@ function M.new_runner(cmd, opts)
           vim.cmd("checktime")
         end,
       })
+      -- Match the Claude Code popup: <C-q>/<C-w> dismiss the float from terminal mode.
+      local function close_float()
+        if vim.api.nvim_win_is_valid(win) then
+          vim.api.nvim_win_close(win, true)
+        end
+        vim.cmd("checktime")
+      end
+      vim.keymap.set("t", "<C-q>", close_float, { buffer = buf, desc = "Close floating runner" })
+      vim.keymap.set("t", "<C-w>", close_float, { buffer = buf, desc = "Close floating runner" })
       vim.cmd("startinsert")
     else
       vim.cmd("tabnew")
