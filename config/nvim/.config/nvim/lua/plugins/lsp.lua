@@ -7,21 +7,15 @@ return {
   },
   {
     "mason-org/mason-lspconfig.nvim",
-    dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
+    dependencies = {
+      "mason-org/mason.nvim",
+      "neovim/nvim-lspconfig",
+      "saghen/blink.cmp",
+    },
     config = function()
-      -- Native completion capabilities (replaces cmp_nvim_lsp).
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-      -- Turn on Neovim's built-in LSP completion (auto-triggered) per buffer.
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(event)
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client:supports_method("textDocument/completion") then
-            vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
-          end
-        end,
-      })
+      -- Advertise blink.cmp's completion capabilities to every server so the
+      -- menu gets rich items (auto-imports, snippets, additionalTextEdits).
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       local mason_lspconfig = require("mason-lspconfig")
 
@@ -33,7 +27,22 @@ return {
             },
           },
         },
-        ts_ls = {},
+        ts_ls = {
+          settings = {
+            -- Auto-import completions are on by default; these only tune the
+            -- *style* of the import ts_ls writes when you accept a candidate.
+            typescript = {
+              preferences = {
+                importModuleSpecifierPreference = "shortest",
+              },
+            },
+            javascript = {
+              preferences = {
+                importModuleSpecifierPreference = "shortest",
+              },
+            },
+          },
+        },
         eslint = {},
         graphql = {
           filetypes = {
