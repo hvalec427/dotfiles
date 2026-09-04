@@ -21,8 +21,6 @@ map("n", "ff", function()
   )
 end, { desc = "[f]ind [f]iles (incl. hidden)" })
 map("n", "fr", function() require("mini.pick").builtin.resume() end, { desc = "[f]ind [r]esume last picker" })
-local mru = require("mru")
-mru.setup() -- still powers the <leader>[ / <leader>] cycle below
 map("n", "<leader><space>", function()
   local pick = require("mini.pick")
   local cur = vim.api.nvim_get_current_buf()
@@ -61,8 +59,6 @@ map("n", "<leader><space>", function()
     },
   })
 end, { desc = "Open buffers (MRU)" })
-map("n", "<leader>[", function() mru.cycle(1) end, { desc = "Cycle to older recent file" })
-map("n", "<leader>]", function() mru.cycle(-1) end, { desc = "Cycle to newer recent file" })
 map("n", "<Tab>", "<cmd>e #<CR>", { desc = "Toggle alternate file" })
 
 map("n", "fd", function()
