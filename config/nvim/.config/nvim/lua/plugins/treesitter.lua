@@ -3,28 +3,25 @@ return {
   branch = "main",
   build = ":TSUpdate",
   lazy = false,
+  dependencies = { "MeanderingProgrammer/treesitter-modules.nvim" },
   config = function()
-    local ok, ts = pcall(require, "nvim-treesitter")
-    -- On a fresh install lazy may run `config` before the `main` branch is
-    -- checked out; the old `master` module has no `install`. Bail quietly so
-    -- we don't get "Failed to run config" -- a restart / :Lazy sync fixes it.
-    if not ok or type(ts.install) ~= "function" then
-      return
-    end
-
-    -- Needs the `tree-sitter` CLI to compile parsers (Brewfile: tree-sitter-cli).
-    pcall(ts.install, {
-      "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
-      "json", "html", "css", "markdown", "markdown_inline",
-    })
-
-    -- The `main` branch no longer auto-enables highlighting; start it per
-    -- buffer via FileType. Markdown stays disabled (as before).
-    vim.api.nvim_create_autocmd("FileType", {
-      callback = function(args)
-        if vim.bo[args.buf].filetype == "markdown" then return end
-        pcall(vim.treesitter.start)
-      end,
-    })
+    -- treesitter-modules restores the classic master-branch modules
+    -- (install + highlight + indent) on top of the main branch, so we don't
+    -- hand-roll the FileType/vim.treesitter.start wiring. pcall-guarded so a
+    -- fresh install (main branch not checked out yet) doesn't hard-fail.
+    pcall(function()
+      require("treesitter-modules").setup({
+        -- Needs the `tree-sitter` CLI to compile (Brewfile: tree-sitter-cli).
+        ensure_installed = {
+          "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
+          "json", "html", "css", "markdown", "markdown_inline",
+        },
+        highlight = {
+          enable = true,
+          disable = { "markdown" }, -- keep markdown highlighting off, as before
+        },
+        indent = { enable = true },
+      })
+    end)
   end,
 }
