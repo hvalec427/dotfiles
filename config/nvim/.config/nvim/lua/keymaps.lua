@@ -86,8 +86,6 @@ end, { desc = "[g]rep visual selection" })
 
 -- Open a floating oil explorer at the current file's directory
 map("n", "<leader>n", function() require("oil").toggle_float() end, { desc = "Oil (floating)" })
--- Open oil in the current window (edit parent dir like a buffer)
-map("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory (Oil)" })
 
 -- =========================
 -- Git
