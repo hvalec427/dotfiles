@@ -7,5 +7,5 @@ windows:
         - nvim
         -
         -
-  - claude: claude
-  - lazygit: lazygit
+  - shell:
+  - shell:
