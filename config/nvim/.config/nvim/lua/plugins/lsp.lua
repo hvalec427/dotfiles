@@ -9,7 +9,20 @@ return {
     "mason-org/mason-lspconfig.nvim",
     dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
     config = function()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      -- Native completion capabilities (replaces cmp_nvim_lsp).
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+      -- Turn on Neovim's built-in LSP completion (auto-triggered) per buffer.
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(event)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client:supports_method("textDocument/completion") then
+            vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+          end
+        end,
+      })
+
       local mason_lspconfig = require("mason-lspconfig")
 
       local servers = {
