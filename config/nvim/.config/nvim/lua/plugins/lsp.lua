@@ -27,16 +27,21 @@ return {
             },
           },
         },
-        ts_ls = {
+        -- vtsls instead of ts_ls: its auto-import/un-imported completions are
+        -- far more reliable, so custom (not-yet-imported) React components
+        -- actually show up in the blink menu.
+        vtsls = {
           settings = {
-            -- Auto-import completions are on by default; these only tune the
-            -- *style* of the import ts_ls writes when you accept a candidate.
             typescript = {
+              -- Offer un-imported symbols as auto-import candidates.
+              suggest = { completeFunctionCalls = true },
+              -- Style of the import written when a candidate is accepted.
               preferences = {
                 importModuleSpecifierPreference = "shortest",
               },
             },
             javascript = {
+              suggest = { completeFunctionCalls = true },
               preferences = {
                 importModuleSpecifierPreference = "shortest",
               },
