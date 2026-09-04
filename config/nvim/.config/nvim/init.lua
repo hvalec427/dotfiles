@@ -35,6 +35,7 @@ require("lazy").setup({
   require("plugins.conform"),
   require("plugins.oil"),
   require("plugins.pick"),
+  require("plugins.surround"),
   require("plugins.minuet"),
 })
 
