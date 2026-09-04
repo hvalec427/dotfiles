@@ -23,7 +23,7 @@ return {
       menu = { auto_show = true },
       -- Resolve additionalTextEdits (auto-imports) and show docs on select.
       documentation = { auto_show = true, auto_show_delay_ms = 200 },
-      -- ts_ls returns un-imported symbols as auto-import candidates; surface them.
+      -- vtsls returns un-imported symbols as auto-import candidates; surface them.
       list = { selection = { preselect = false, auto_insert = false } },
     },
 
