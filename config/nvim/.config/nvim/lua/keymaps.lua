@@ -89,7 +89,13 @@ map("n", "fs", function()
       items = items,
       cwd = root,
       choose = function(item)
-        vim.cmd("edit " .. vim.fn.fnameescape(root .. "/" .. item))
+        -- Defer the edit until after mini.pick has closed its float and
+        -- restored the original window. Running `:edit` synchronously here
+        -- loads the file into the doomed picker window, leaving a listed but
+        -- unloaded buffer that opens empty until re-opened via another picker.
+        vim.schedule(function()
+          vim.cmd("edit " .. vim.fn.fnameescape(root .. "/" .. item))
+        end)
       end,
     },
   })
