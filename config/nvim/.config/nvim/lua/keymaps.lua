@@ -4,22 +4,7 @@ local map = vim.keymap.set
 -- mini.pick pickers
 -- =========================
 
--- Find files including hidden ones (rg skips hidden files AND dirs by default,
--- which hides everything under paths like .config/). Exclude the .git dir.
-map("n", "ff", function()
-  local pick = require("mini.pick")
-  pick.builtin.cli(
-    { command = { "rg", "--files", "--hidden", "--glob", "!.git", "--color=never" } },
-    {
-      source = {
-        name = "Files (incl. hidden)",
-        show = function(buf_id, items, query)
-          pick.default_show(buf_id, items, query, { show_icons = true })
-        end,
-      },
-    }
-  )
-end, { desc = "[f]ind [f]iles (incl. hidden)" })
+map("n", "ff", function() require("pickers").files() end, { desc = "[f]ind [f]iles" })
 map("n", "fr", function() require("mini.pick").builtin.resume() end, { desc = "[f]ind [r]esume last picker" })
 map("n", "<leader><space>", function()
   local pick = require("mini.pick")
@@ -62,7 +47,7 @@ end, { desc = "Open buffers (MRU)" })
 map("n", "<Tab>", "<cmd>e #<CR>", { desc = "Toggle alternate file" })
 
 map("n", "fd", function()
-  require("mini.pick").builtin.files(nil, { source = { cwd = vim.fn.expand("%:p:h") } })
+  require("pickers").files({ cwd = vim.fn.expand("%:p:h") })
 end, { desc = "[f]ind in current [d]ir" })
 
 map("n", "fs", function()
@@ -101,15 +86,15 @@ map("n", "fs", function()
   })
 end, { desc = "[f]ile [s]tatus (git changed + new)" })
 
-map("n", "fg", function() require("mini.pick").builtin.grep_live() end, { desc = "Live [g]rep" })
+map("n", "fg", function() require("pickers").grep_live() end, { desc = "Live [g]rep" })
 
 map("n", "fw", function()
-  require("mini.pick").builtin.grep({ pattern = vim.fn.expand("<cword>") })
+  require("pickers").grep({ pattern = vim.fn.expand("<cword>") })
 end, { desc = "[g]rep current [w]ord" })
 
 map("v", "fw", function()
   vim.cmd('noau normal! "vy"')
-  require("mini.pick").builtin.grep({ pattern = vim.fn.getreg("v") })
+  require("pickers").grep({ pattern = vim.fn.getreg("v") })
 end, { desc = "[g]rep visual selection" })
 
 -- =========================

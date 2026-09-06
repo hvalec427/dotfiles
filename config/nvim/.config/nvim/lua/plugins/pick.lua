@@ -21,6 +21,9 @@ return {
 
     require("mini.pick").setup({
       window = { config = centered_win },
+      mappings = {
+        toggle_all = { char = "<M-m>", func = function() require("pickers").toggle_all() end },
+      },
     })
     require("mini.extra").setup()
 
