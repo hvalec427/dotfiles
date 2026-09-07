@@ -15,17 +15,7 @@ This repo uses a single installer to bootstrap Homebrew, deploy Brewfiles, stow 
    cd dotfiles
    ```
 
-   or this if also including private repo(this is for me only)
-
-   ```sh
-   git clone --recurse-submodules git@github.com:hvalec427/dotfiles.git
-   cd dotfiles
-   ```
-
-   or if I forget
-   ```sh
-   git submodule update --init --recursive
-   ```
+   The installer pulls in the private submodule on its own (see [Private configuration](#private-configuration)), so a plain clone is enough.
 
 2. **Make the installer executable:**
 
@@ -43,4 +33,6 @@ This repo uses a single installer to bootstrap Homebrew, deploy Brewfiles, stow 
 
 ## Private configuration
 
-The `private/` directory contains additional dotfiles, tmux helpers, and Brewfiles that are not tracked in the public repository.
+The `private/` directory contains additional dotfiles, tmux helpers, and Brewfiles that are not tracked in the public repository. It's a git submodule pointing at a private repo.
+
+`install.sh` initializes and clones this submodule automatically, then runs its installer, so there's no manual clone step. This requires a GitHub SSH key with access to the private repo — without it, the installer prints `No credentials. Skipping...` and continues with just the public config.
