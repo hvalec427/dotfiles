@@ -49,7 +49,7 @@ end
 local function grep_command(all, pattern)
   local cmd = {
     "rg", "--column", "--line-number", "--no-heading",
-    "--field-match-separator", "\x00", "--color=never", "--no-fixed-strings",
+    "--field-match-separator", "\\x00", "--color=never", "--no-fixed-strings",
   }
   apply_visibility(cmd, all)
   local case = vim.o.ignorecase and (vim.o.smartcase and "smart-case" or "ignore-case") or "case-sensitive"
