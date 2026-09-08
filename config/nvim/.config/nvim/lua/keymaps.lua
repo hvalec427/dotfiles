@@ -73,6 +73,19 @@ map("n", "fs", function()
       name = "Git status",
       items = items,
       cwd = root,
+      -- Preview the file's git diff (vs HEAD) instead of its full contents.
+      -- Untracked/new files have no HEAD version, so fall back to a --no-index
+      -- diff against /dev/null, which renders the whole file as added.
+      preview = function(buf_id, item)
+        local path = type(item) == "table" and item.text or tostring(item)
+        local out = vim.fn.systemlist({ "git", "-C", root, "diff", "HEAD", "--", path })
+        if vim.v.shell_error ~= 0 or #out == 0 then
+          out = vim.fn.systemlist({ "git", "-C", root, "diff", "--no-index", "--", "/dev/null", root .. "/" .. path })
+        end
+        if #out == 0 then out = { "(no diff)" } end
+        vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, out)
+        vim.bo[buf_id].filetype = "diff"
+      end,
       choose = function(item)
         -- Defer the edit until after mini.pick has closed its float and
         -- restored the original window. Running `:edit` synchronously here

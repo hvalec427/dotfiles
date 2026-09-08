@@ -140,9 +140,13 @@ local function do_update()
   pcall(vim.api.nvim_win_set_config, state.win, right)
 
   if item ~= nil then
-    -- default_preview finds this window via bufwinid(buf) and scrolls it to the
-    -- target line, so grep hits land at the matched row.
-    pcall(mp().default_preview, buf, item)
+    -- Honor a picker's own `source.preview` (e.g. the git-status picker renders
+    -- a diff); otherwise use default_preview, which finds this window via
+    -- bufwinid(buf) and scrolls it to the target line for grep hits.
+    local opts = mp().get_picker_opts()
+    local preview = opts and opts.source and opts.source.preview
+    if type(preview) ~= "function" then preview = mp().default_preview end
+    pcall(preview, buf, item)
   end
 
   -- mini.pick blocks in getcharstr() and repaints only via explicit redraws, so
