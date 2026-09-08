@@ -24,7 +24,7 @@ if [ -f "$BREWFILE" ]; then
   # trust is stored per-machine, not in the Brewfile, so a fresh machine needs this too
   brew trust --formula gromgit/brewtils/taproom
   log "brew bundle: main Brewfile"
-  brew bundle --file "$BREWFILE" --verbose
+  brew bundle --file "$BREWFILE" --verbose || log "brew bundle had failures (continuing to stow)"
 else
   log "no Brewfile found at $BREWFILE"
 fi
