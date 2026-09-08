@@ -3,29 +3,18 @@ return {
   dependencies = { "nvim-mini/mini.extra", "nvim-mini/mini.icons" },
   lazy = false,
   config = function()
-    -- Center the picker as a floating window (mini.pick defaults to a
-    -- bottom-anchored, full-width strip).
-    local function centered_win()
-      local width = math.floor(vim.o.columns * 0.8)
-      local height = math.floor(vim.o.lines * 0.8)
-      return {
-        relative = "editor",
-        anchor = "NW",
-        width = width,
-        height = height,
-        row = math.floor((vim.o.lines - height) / 2),
-        col = math.floor((vim.o.columns - width) / 2),
-        border = "rounded",
-      }
-    end
+    local preview = require("pick_preview")
 
+    -- Squeeze the picker into a centered left pane; pick_preview draws a live
+    -- preview float in the matching right pane (see lua/pick_preview.lua).
     require("mini.pick").setup({
-      window = { config = centered_win },
+      window = { config = preview.win_config },
       mappings = {
         toggle_all = { char = "<M-m>", func = function() require("pickers").toggle_all() end },
       },
     })
     require("mini.extra").setup()
+    preview.setup()
 
     -- Make the highlighted (current) row stand out more than the default
     -- CursorLine link. Re-apply on ColorScheme so mini's defaults don't win.
