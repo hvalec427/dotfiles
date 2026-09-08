@@ -2,17 +2,73 @@ local pick = require("mini.pick")
 
 local M = {}
 
+-- Directories (and a couple of files) hidden from the default picker view. We
+-- run rg with --hidden --no-ignore, so this is our manual stand-in for
+-- .gitignore: build output, dependencies, caches, and machine-generated cruft
+-- we almost never want to open or grep. Toggle them back in with <M-m>.
+-- Kept deliberately free of source-ish names (lib, src, bin, docs) so we never
+-- hide real code -- even where a gitignore lists them (e.g. Crystal's lib/).
 local EXCLUDES = {
+  -- VCS / OS
   "!.git",
+  "!.hg",
+  "!.svn",
+  "!.DS_Store",
+  -- Editor / IDE (machine-generated)
+  "!.idea",
+  -- Dependencies
   "!node_modules",
-  "!Pods",
-  "!build",
-  "!.gradle",
-  "!DerivedData",
-  "!.expo",
-  "!dist",
+  "!bower_components",
   "!vendor",
+  "!Pods",
+  "!Carthage",
   "!.venv",
+  "!venv",
+  "!.bundle",
+  "!.shards",
+  -- Package-manager stores
+  "!.yarn",
+  "!.pnpm-store",
+  -- Build output
+  "!build",
+  "!dist",
+  "!out",
+  "!target",
+  "!DerivedData",
+  "!storybook-static",
+  "!buck-out",
+  -- JS/TS framework output & caches
+  "!.next",
+  "!.nuxt",
+  "!.output",
+  "!.svelte-kit",
+  "!.angular",
+  "!.astro",
+  "!.turbo",
+  "!.parcel-cache",
+  "!.cache",
+  "!.eslintcache",
+  -- Mobile / native build
+  "!.expo",
+  "!.gradle",
+  "!.cxx",
+  "!.kotlin",
+  "!.dart_tool",
+  "!xcuserdata",
+  -- Static site generators
+  "!.jekyll-cache",
+  -- Testing / coverage
+  "!coverage",
+  "!.nyc_output",
+  -- Python
+  "!__pycache__",
+  "!.pytest_cache",
+  "!.mypy_cache",
+  "!.ruff_cache",
+  "!.tox",
+  -- Infra / tooling
+  "!.terraform",
+  "!.serverless",
 }
 
 local function apply_visibility(cmd, all)
