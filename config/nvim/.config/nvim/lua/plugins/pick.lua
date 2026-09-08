@@ -11,6 +11,9 @@ return {
       window = { config = preview.win_config },
       mappings = {
         toggle_all = { char = "<M-m>", func = function() require("pickers").toggle_all() end },
+        -- Scroll the side preview float (C-n/C-p already move the selection).
+        preview_down = { char = "<C-j>", func = function() require("pick_preview").scroll(1) end },
+        preview_up = { char = "<C-k>", func = function() require("pick_preview").scroll(-1) end },
       },
     })
     require("mini.extra").setup()

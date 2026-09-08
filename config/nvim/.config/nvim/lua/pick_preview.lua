@@ -72,6 +72,23 @@ function M.win_config()
   return left
 end
 
+-- Scroll the (non-focusable) preview float by half a page. `dir` is 1 (down) or
+-- -1 (up). Meant to be bound to picker mappings, so it forces a redraw itself
+-- (mini.pick's getcharstr loop won't repaint on its own).
+function M.scroll(dir)
+  if not (state.win and vim.api.nvim_win_is_valid(state.win)) then return end
+  vim.api.nvim_win_call(state.win, function()
+    local height = vim.api.nvim_win_get_height(0)
+    local step = math.max(1, math.floor(height / 2)) * dir
+    local last = vim.api.nvim_buf_line_count(0)
+    local view = vim.fn.winsaveview()
+    view.topline = math.max(1, math.min(view.topline + step, last))
+    view.lnum = math.max(1, math.min(view.lnum + step, last))
+    vim.fn.winrestview(view)
+  end)
+  pcall(vim.cmd.redraw)
+end
+
 local MiniPick
 local function mp()
   MiniPick = MiniPick or require("mini.pick")
