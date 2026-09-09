@@ -3,17 +3,17 @@ return {
   dependencies = { "nvim-mini/mini.extra", "nvim-mini/mini.icons" },
   lazy = false,
   config = function()
-    local preview = require("pick_preview")
+    local preview = require("mini.pick_preview")
 
     -- Squeeze the picker into a centered left pane; pick_preview draws a live
     -- preview float in the matching right pane (see lua/pick_preview.lua).
     require("mini.pick").setup({
       window = { config = preview.win_config },
       mappings = {
-        toggle_all = { char = "<M-m>", func = function() require("pickers").toggle_all() end },
+        toggle_all = { char = "<M-m>", func = function() require("mini.pickers").toggle_all() end },
         -- Scroll the side preview float (C-n/C-p already move the selection).
-        preview_down = { char = "<C-j>", func = function() require("pick_preview").scroll(1) end },
-        preview_up = { char = "<C-k>", func = function() require("pick_preview").scroll(-1) end },
+        preview_down = { char = "<C-j>", func = function() require("mini.pick_preview").scroll(1) end },
+        preview_up = { char = "<C-k>", func = function() require("mini.pick_preview").scroll(-1) end },
       },
     })
     require("mini.extra").setup()

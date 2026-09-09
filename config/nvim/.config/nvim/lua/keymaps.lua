@@ -4,7 +4,7 @@ local map = vim.keymap.set
 -- mini.pick pickers
 -- =========================
 
-map("n", "ff", function() require("pickers").files() end, { desc = "[f]ind [f]iles" })
+map("n", "ff", function() require("mini.pickers").files() end, { desc = "[f]ind [f]iles" })
 map("n", "fr", function() require("mini.pick").builtin.resume() end, { desc = "[f]ind [r]esume last picker" })
 map("n", "<leader><space>", function()
   local pick = require("mini.pick")
@@ -47,7 +47,7 @@ end, { desc = "Open buffers (MRU)" })
 map("n", "<Tab>", "<cmd>e #<CR>", { desc = "Toggle alternate file" })
 
 map("n", "fd", function()
-  require("pickers").files({ cwd = vim.fn.expand("%:p:h") })
+  require("mini.pickers").files({ cwd = vim.fn.expand("%:p:h") })
 end, { desc = "[f]ind in current [d]ir" })
 
 map("n", "fs", function()
@@ -99,15 +99,15 @@ map("n", "fs", function()
   })
 end, { desc = "[f]ile [s]tatus (git changed + new)" })
 
-map("n", "fg", function() require("pickers").grep_live() end, { desc = "Live [g]rep" })
+map("n", "fg", function() require("mini.pickers").grep_live() end, { desc = "Live [g]rep" })
 
 map("n", "fw", function()
-  require("pickers").grep({ pattern = vim.fn.expand("<cword>") })
+  require("mini.pickers").grep({ pattern = vim.fn.expand("<cword>") })
 end, { desc = "[g]rep current [w]ord" })
 
 map("v", "fw", function()
   vim.cmd('noau normal! "vy"')
-  require("pickers").grep({ pattern = vim.fn.getreg("v") })
+  require("mini.pickers").grep({ pattern = vim.fn.getreg("v") })
 end, { desc = "[g]rep visual selection" })
 
 -- =========================
