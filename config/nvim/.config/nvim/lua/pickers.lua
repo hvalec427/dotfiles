@@ -109,7 +109,10 @@ local function grep_command(all, pattern)
   -- --json gives us each match's exact byte range (submatch start/end), which
   -- the plain --column format lacks. Without the end offset mini.pick can only
   -- highlight a single cell at the match start in the preview; see grep_items.
-  local cmd = { "rg", "--json", "--no-fixed-strings" }
+  -- --fixed-strings: treat the pattern as literal text, not a regex, so queries
+  -- like "function(" or ".list_extend" match what you typed instead of erroring
+  -- on the "(" or letting "." match any character.
+  local cmd = { "rg", "--json", "--fixed-strings" }
   apply_visibility(cmd, all)
   local case = vim.o.ignorecase and (vim.o.smartcase and "smart-case" or "ignore-case") or "case-sensitive"
   vim.list_extend(cmd, { "--" .. case, "--", pattern })
