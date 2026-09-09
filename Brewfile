@@ -1,55 +1,68 @@
 # Essentials
-brew "btop"
 brew "git"
+brew "stow"
+brew "btop"
 brew "htop"
 brew "mactop"
 brew "fastfetch"
-brew "ranger"
+brew "eza"
+brew "zoxide"
+brew "bat"
+brew "mole"
+brew "gromgit/brewtils/taproom"
 cask "caffeine"
 cask "google-chrome"
+cask "firefox"
 cask "karabiner-elements"
 cask "mos"
 cask "raycast"
 cask "stats"
 cask "tiles"
 cask "visual-studio-code"
-brew "jq"
-cask "mediainfo"
-cask "firefox"
-brew "gromgit/brewtils/taproom"
-brew "ffmpeg"
-brew "stow"
-cask "amethyst"
-brew "eza"
-brew "zoxide"
-brew "bat"
-brew "mole"
 
 # Coding
-brew "cocoapods"
-cask "homebrew/cask/codex"
-brew "lazygit"
 brew "neovim"
 brew "tree-sitter-cli" # required by nvim-treesitter (main branch) to compile parsers
-brew "ripgrep" # used by mini.pick for file finding and live grep
+brew "ripgrep"         # used by mini.pick for file finding and live grep
 brew "fzf"
+brew "lazygit"
 brew "sesh"
 brew "tmuxinator"
-brew "scrcpy"
-cask "android-platform-tools"
-cask "fork"
-cask "insomnia"
-cask "ngrok/ngrok/ngrok"
-cask "postman"
-cask "android-studio"
-cask "slack"
-cask "toggl-track"
-cask "zoom"
+brew "gh"
+brew "git-filter-repo"
+
+# Language runtimes / version managers
 brew "jenv"
 brew "nvm"
 brew "rbenv"
-cask "iterm2"
-cask "xcodes-app"
-cask "react-native-debugger"
 brew "pyenv"
-cask "copilot-cli"
+brew "yarn"
+
+# Secrets
+brew "doppler"
+
+# Mobile / React Native
+brew "cocoapods"
+brew "watchman"
+brew "scrcpy"
+cask "android-platform-tools"
+cask "android-commandlinetools"
+cask "android-studio"
+cask "xcodes-app"
+
+# Terminals / fonts
+cask "iterm2"
+cask "font-hack-nerd-font"
+
+# API / DB clients
+cask "insomnia"
+cask "postman"
+
+# AI CLIs
+cask "claude-code"
+
+# Apps
+cask "slack"
+cask "toggl-track"
+cask "zoom"
+
