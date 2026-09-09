@@ -55,9 +55,29 @@ return {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
     dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {
-      enhanced_diff_hl = true,
-      use_icons = true,
-    },
+    opts = function()
+      local actions = require("diffview.actions")
+      -- Move to a file entry, open its diff, then keep focus in the panel so
+      -- j/k feel like a cursor-following preview (no <CR> needed).
+      local function preview(move)
+        return function()
+          move()
+          actions.select_entry()
+          actions.focus_files()
+        end
+      end
+      return {
+        enhanced_diff_hl = true,
+        use_icons = true,
+        keymaps = {
+          file_panel = {
+            { "n", "j", preview(actions.next_entry), { desc = "Next entry (preview)" } },
+            { "n", "<down>", preview(actions.next_entry), { desc = "Next entry (preview)" } },
+            { "n", "k", preview(actions.prev_entry), { desc = "Prev entry (preview)" } },
+            { "n", "<up>", preview(actions.prev_entry), { desc = "Prev entry (preview)" } },
+          },
+        },
+      }
+    end,
   },
 }
