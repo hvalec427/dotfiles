@@ -219,15 +219,8 @@ map({ "n", "x", "o" }, "<A-i>", function()
   end
 end, { desc = "Select child node (shrink)" })
 
--- =========================
--- Terminal runners
--- =========================
-
-local new_runner = require("runner").new_runner
-
-local lazygit = new_runner("lazygit", { floating = true })
-vim.api.nvim_create_user_command("LazyGit", lazygit, {})
-map({ "n", "x" }, "<leader>l", lazygit, { desc = "LazyGit (floating)" })
+-- LazyGit now opens as a tmux popup (<prefix>g via tmux-lazygit-popup),
+-- so the in-editor floating runner has been removed.
 
 -- Completion keymaps (Tab/S-Tab navigate, <C-y> accept) live in
 -- plugins/blink.lua so they stay in sync with the completion engine.
