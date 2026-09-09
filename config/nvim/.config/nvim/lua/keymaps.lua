@@ -155,6 +155,7 @@ end
 map("n", "<leader>gD", "<cmd>DiffviewOpen<CR>", { desc = "Diff working directory" })
 map("n", "<leader>gd", "<cmd>Gitsigns diffthis HEAD<CR>", { desc = "Diff current file vs last commit" })
 map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "File history (current file)" })
+map("x", "<leader>gh", ":DiffviewFileHistory<CR>", { desc = "File history (selected lines)" })
 map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Gitsigns)" })
 
 -- =========================
