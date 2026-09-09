@@ -106,14 +106,54 @@ local function files_command(all)
 end
 
 local function grep_command(all, pattern)
-  local cmd = {
-    "rg", "--column", "--line-number", "--no-heading",
-    "--field-match-separator", "\\x00", "--color=never", "--no-fixed-strings",
-  }
+  -- --json gives us each match's exact byte range (submatch start/end), which
+  -- the plain --column format lacks. Without the end offset mini.pick can only
+  -- highlight a single cell at the match start in the preview; see grep_items.
+  local cmd = { "rg", "--json", "--no-fixed-strings" }
   apply_visibility(cmd, all)
   local case = vim.o.ignorecase and (vim.o.smartcase and "smart-case" or "ignore-case") or "case-sensitive"
   vim.list_extend(cmd, { "--" .. case, "--", pattern })
   return cmd
+end
+
+-- Turn rg --json output into mini.pick items. We return *table* items rather
+-- than the usual "path\0lnum\0col\0text" strings so each item can carry the
+-- match's end column: `text` keeps the exact NUL-separated string mini renders
+-- in the list (display is unchanged), while `path`/`lnum`/`col`/`end_col` drive
+-- the preview, which now highlights the whole match instead of just its first
+-- character. rg paths are relative to its spawn cwd, so resolve against the
+-- same cwd for the preview's file read.
+local function grep_items(cwd)
+  cwd = cwd or vim.fn.getcwd()
+  return function(lines)
+    local items = {}
+    for _, line in ipairs(lines) do
+      if line ~= "" then
+        local ok, obj = pcall(vim.json.decode, line)
+        if ok and type(obj) == "table" and obj.type == "match" then
+          local d = obj.data
+          local path = d.path and d.path.text
+          local text = d.lines and d.lines.text
+          local sm = d.submatches and d.submatches[1]
+          if path and text and sm then
+            text = text:gsub("\r?\n$", "")
+            local lnum = d.line_number
+            local col = sm.start + 1
+            local abs = path:sub(1, 1) == "/" and path or (cwd .. "/" .. path)
+            items[#items + 1] = {
+              text = string.format("%s\0%d\0%d\0%s", path, lnum, col, text),
+              path = abs,
+              lnum = lnum,
+              col = col,
+              end_lnum = lnum,
+              end_col = sm["end"] + 1,
+            }
+          end
+        end
+      end
+    end
+    return items
+  end
 end
 
 function M.files(o)
@@ -146,7 +186,11 @@ function M.grep(o)
   }
   restore_query(o._query)
   pick.builtin.cli(
-    { command = grep_command(all, pattern) },
+    {
+      command = grep_command(all, pattern),
+      postprocess = grep_items(cwd or vim.fn.getcwd()),
+      spawn_opts = { cwd = cwd },
+    },
     { source = { name = name, cwd = cwd, show = show_icons } }
   )
 end
@@ -170,6 +214,7 @@ function M.grep_live(o)
       return pick.set_picker_items({}, { do_match = false })
     end
     sys = pick.set_picker_items_from_cli(grep_command(all, table.concat(query)), {
+      postprocess = grep_items(cwd),
       set_items_opts = { do_match = false },
       spawn_opts = { cwd = cwd },
     })
