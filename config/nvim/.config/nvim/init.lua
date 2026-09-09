@@ -38,7 +38,6 @@ require("lazy").setup({
   require("plugins.pick"),
   require("plugins.surround"),
   require("plugins.minuet"),
-  require("plugins.claudecode"),
 })
 
 -- =========================
