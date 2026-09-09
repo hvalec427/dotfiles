@@ -69,6 +69,9 @@ local EXCLUDES = {
   -- Infra / tooling
   "!.terraform",
   "!.serverless",
+  -- Codegen output (path-anchored, not a bare dir name, so we only hide the
+  -- generated/graphql combo and never a legit top-level generated/).
+  "!**/generated/graphql/**",
 }
 
 local function apply_visibility(cmd, all)
