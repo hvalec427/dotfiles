@@ -1,0 +1,11 @@
+[core]
+	editor = nvim
+	autocrlf = input
+[init]
+	defaultBranch = master
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[include]
+	path = ~/.config/git/private.gitconfig
