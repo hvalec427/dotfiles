@@ -110,10 +110,16 @@ end
 
 -- Identity used to skip redundant repaints. Unlike the label it must stay
 -- distinct across grep hits in the same file, so it keeps the location suffix.
+-- It also includes the match region (col/end_col): a live-grep narrowing like
+-- "func" -> "funct" keeps the same line and start column, so without end_col the
+-- key would collide and the preview would keep highlighting the shorter match.
 local function item_key(item)
   if item == nil then return "\0nil" end
   if type(item) == "table" then
-    return table.concat({ item.text or "", tostring(item.bufnr), tostring(item.lnum) }, "\0")
+    return table.concat({
+      item.text or "", tostring(item.bufnr), tostring(item.path),
+      tostring(item.lnum), tostring(item.col), tostring(item.end_col),
+    }, "\0")
   end
   return tostring(item)
 end
