@@ -3,9 +3,9 @@
 vim.g.mapleader = " "             -- Space as leader
 vim.opt.clipboard = "unnamedplus" -- System clipboard
 vim.opt.tabstop = 2               -- Tab = 2 spaces
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.opt.autoread = true
+vim.opt.shiftwidth = 2            -- Indent = 2 spaces
+vim.opt.expandtab = true          -- Use spaces instead of tabs
+vim.opt.autoread = true           -- Reload files changed outside Neovim
 vim.opt.number = true         -- show absolute line number for current line
 vim.opt.relativenumber = true -- show relative numbers for all other lines
 vim.opt.ignorecase = true     -- ignore case when searching
@@ -18,16 +18,18 @@ vim.opt.swapfile = false      -- ignore swap files
 vim.opt.undofile = true       -- enable undofile history
 
 vim.diagnostic.config({
-  virtual_text = true, -- show error text inline
-  underline = true,
-  signs = true,
+  virtual_text = true,     -- show error text inline
+  underline = true,        -- underline the offending code
+  signs = true,            -- show diagnostic icons in the sign column
   update_in_insert = true, -- update while typing
 })
 
+-- Reload files changed outside Neovim when refocusing or entering a buffer.
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
   command = "checktime",
 })
 
+-- Restore the cursor to its last position when reopening a file (skipping commit buffers).
 vim.api.nvim_create_autocmd("BufReadPost", {
   desc = "jump to last pos when opening a file",
   callback = function(args)
