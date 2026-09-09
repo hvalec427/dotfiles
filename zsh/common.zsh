@@ -33,7 +33,8 @@ alias cd="z"
 
 alias cat="bat"
 
-alias s="sesh picker -i"
+# same picker as tmux prefix+s; outside tmux, `sesh connect` starts/attaches a server
+alias s="$HOME/.config/tmux/scripts/sesh-picker.sh"
 alias lg="lazygit"
 alias v="nvim"
 alias wip="tmuxinator start dev -n"
