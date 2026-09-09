@@ -9,19 +9,31 @@ dot() {
 }
 
 emit_list() {
-  local predefined name dir base
+  local predefined name dir base line running idle
   predefined="$(tmuxinator list -n 2>/dev/null | tail -n +2)"
   RUNNING="$(tmux list-sessions -F '#{session_name}' 2>/dev/null)"
+  running=""
+  idle=""
+
+  add() {
+    if grep -qxF "$1" <<<"$RUNNING"; then running+="$2"$'\n'; else idle+="$2"$'\n'; fi
+  }
 
   while IFS= read -r name; do
-    [ -n "$name" ] && printf '%s \033[33m\033[0m  %s\t%s\t%s\n' "$(dot "$name")" "$name" "$name" "$name"
+    [ -n "$name" ] || continue
+    line="$(printf '%s \033[33m\033[0m  %s\t%s\t%s' "$(dot "$name")" "$name" "$name" "$name")"
+    add "$name" "$line"
   done <<<"$predefined"
 
   while IFS= read -r dir; do
     base="${dir##*/}"
     grep -qxF "$base" <<<"$predefined" && continue
-    printf '%s \033[34m\033[0m  %s\t%s\t%s\n' "$(dot "$base")" "$base" "$dir" "$base"
+    line="$(printf '%s \033[34m\033[0m  %s\t%s\t%s' "$(dot "$base")" "$base" "$dir" "$base")"
+    add "$base" "$line"
   done < <(find "$DEV" -mindepth 1 -maxdepth 1 -type d ! -name node_modules | sort)
+
+  printf '%s' "$running"
+  printf '%s' "$idle"
 }
 
 if [ "${1:-}" = "--list" ]; then
