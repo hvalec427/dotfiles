@@ -4,9 +4,10 @@ return {
   lazy = false,
   priority = 900,
   config = function()
-    require("mini.icons").setup()
+    local icons = require("mini.icons")
+    icons.setup()
     -- Let plugins that still `require("nvim-web-devicons")` (lualine, oil,
     -- fff, ...) transparently use mini.icons instead.
-    MiniIcons.mock_nvim_web_devicons()
+    icons.mock_nvim_web_devicons()
   end,
 }
