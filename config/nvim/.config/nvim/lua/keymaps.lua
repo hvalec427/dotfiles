@@ -246,8 +246,5 @@ vim.keymap.set("t", "<C-j>", [[<Cmd>TmuxNavigateDown<CR>]], { silent = true })
 vim.keymap.set("t", "<C-k>", [[<Cmd>TmuxNavigateUp<CR>]], { silent = true })
 vim.keymap.set("t", "<C-l>", [[<Cmd>TmuxNavigateRight<CR>]], { silent = true })
 
--- increase resize steps
-vim.keymap.set("n", "<C-w>+", "<cmd>resize +5<CR>", { silent = true })
-vim.keymap.set("n", "<C-w>-", "<cmd>resize -5<CR>", { silent = true })
-vim.keymap.set("n", "<C-w>>", "<cmd>vertical resize +15<CR>", { silent = true })
-vim.keymap.set("n", "<C-w><", "<cmd>vertical resize -15<CR>", { silent = true })
+-- Window resizing is handled by smart-splits.nvim (see lua/plugins/navigator.lua)
+-- on <C-w>h/j/k/l for tmux-like directional resizing.
