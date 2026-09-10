@@ -4,6 +4,11 @@ set -e
 DIR="$(cd "$(dirname "$0")/" && pwd)"
 log() { printf "\n==> %s\n" "$*"; }
 
+# Shared stow helpers + the global STOW_<PKG> toggles (also used by
+# private/install.sh, so one config governs both repos).
+. "$DIR/lib/stow.sh"
+load_stow_conf "$DIR"
+
 log "making scripts executable"
 bash "$DIR/zsh/make-scripts-executable.sh"
 
@@ -30,37 +35,9 @@ else
 fi
 log "done installing brewfiles"
 
-# collect stow packages
+# stow configs (honors STOW_<PKG> toggles)
 log "stowing configs"
-
-PACKAGES=()
-for d in "$DIR"/config/*; do
-  [ -d "$d" ] || continue
-  pkg="$(basename "$d")"
-  case "$pkg" in
-    .* )
-      continue
-      ;;
-  esac
-  PACKAGES+=("$pkg")
-done
-
-if [ ${#PACKAGES[@]} -eq 0 ]; then
-  log "no config packages found"
-else
-  command -v stow >/dev/null || { log "installing stow"; brew install stow; }
-
-  for d in "$DIR"/config/*/.config/*; do
-    [ -d "$d" ] || continue
-    mkdir -p "$HOME/.config/$(basename "$d")"
-  done
-
-  cd "$DIR"
-  for pkg in "${PACKAGES[@]}"; do
-    log "stowing: $pkg"
-    stow -d config -t ~ "$pkg"
-  done
-fi
+stow_all "$DIR/config" "$HOME"
 log "done stowing configs"
 
 # install repos and extras

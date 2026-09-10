@@ -1,4 +1,5 @@
 .DS_Store
+/install.conf.local
 /config/tmux/.config/tmux/plugins/*
 /config/nvim/.config/nvim/.nvimlog
 /config/karabiner/.config/karabiner/automatic_backups/
