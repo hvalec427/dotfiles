@@ -14,7 +14,7 @@ return {
         -- Needs the `tree-sitter` CLI to compile (Brewfile: tree-sitter-cli).
         ensure_installed = {
           "lua", "vim", "vimdoc", "javascript", "typescript", "tsx",
-          "json", "html", "css", "markdown", "markdown_inline",
+          "svelte", "json", "html", "css", "markdown", "markdown_inline",
         },
         highlight = {
           enable = true,

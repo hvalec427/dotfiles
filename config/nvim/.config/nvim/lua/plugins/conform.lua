@@ -11,6 +11,7 @@ return {
         lua = { "stylua" },
         javascript = { "prettier", "eslint_d" },
         typescript = { "prettier", "eslint_d" },
+        svelte = { "prettier" },
       },
     })
   end,

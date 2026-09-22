@@ -48,6 +48,7 @@ return {
             },
           },
         },
+        svelte = {},
         eslint = {},
         graphql = {
           filetypes = {
