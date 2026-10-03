@@ -164,9 +164,26 @@ map("n", "<leader>gq", close_diff_windows, { desc = "Close diff (Diffview or Git
 
 map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 
-map("n", "grd", vim.lsp.buf.definition, { desc = "Go to [d]efinition (LSP)" })
+-- Route LSP location lookups through mini.extra's picker so multi-result
+-- lookups open in the mini.pick UI (with side preview) instead of Neovim's
+-- native vim.ui.select popup. Single results still jump directly.
+--
+-- Each key maps to exactly one LSP method, matching its real meaning:
+-- `grd` go-to-definition is the everyday nav key and works on any symbol;
+-- `gri` is specifically "implementors of this interface/abstract type" and is
+-- legitimately empty on plain functions. Use `grd` for normal navigation.
+local function lsp_pick(scope)
+  return function()
+    require("mini.extra").pickers.lsp({ scope = scope })
+  end
+end
 
--- Use built-in references mapping only
+map("n", "grd", lsp_pick("definition"), { desc = "Go to [d]efinition (LSP)" })
+map("n", "gri", lsp_pick("implementation"), { desc = "Go to [i]mplementation (LSP)" })
+map("n", "grt", lsp_pick("type_definition"), { desc = "Go to [t]ype definition (LSP)" })
+map("n", "grr", lsp_pick("references"), { desc = "LSP [r]eferences" })
+
+-- Built-in references mapping (raw quickfix, no picker)
 map("n", "grR", vim.lsp.buf.references, { desc = "LSP references (built-in)" })
 
 -- =========================
