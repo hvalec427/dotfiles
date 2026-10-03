@@ -73,6 +73,10 @@ return {
       mason_lspconfig.setup({
         ensure_installed = vim.tbl_keys(servers),
         automatic_installation = true,
+        -- Don't auto-enable every installed server; we enable exactly the
+        -- servers in `servers` below. Without this, a leftover install like
+        -- ts_ls attaches alongside vtsls and produces duplicate results.
+        automatic_enable = false,
       })
 
       -- vim.lsp.config() only registers config; enable() actually starts the servers
