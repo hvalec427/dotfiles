@@ -3,15 +3,13 @@
 -- Plain Node/TS (Metro config scripts, Jest tests, node scripts): fully
 -- working -- set a breakpoint, <leader>dc, it stops in the dap-ui panels.
 --
--- React Native / Hermes attach (RN >= 0.76): a *naive* chrome/node attach does
--- NOT work -- RN dropped chrome://inspect, and the Metro inspector proxy needs
--- a specific CDP handshake. The AkisArou/nvim-dap-react-native plugin ships a
--- Node bridge that speaks that handshake (the same approach vscode-react-native
--- uses, which debugs Hermes on 0.76+ as of its v1.14.0 fix). It is wired up
--- below as the "React Native: Attach Hermes" config. Whether it drives
--- breakpoints on *this* RN version is unverified in general -- test it against
--- the running app. If it times out, React Native DevTools (press `j` in the
--- Metro terminal) remains the fallback for pausing the live UI thread.
+-- React Native / Hermes attach (RN >= 0.76): handled by `metroctl`, which owns
+-- the single Hermes CDP connection the fusebox inspector allows and re-exposes
+-- it as a DAP server on port 9223. So nvim attaches to metroctl (not Hermes
+-- directly) via the `metroctl` adapter below. Run metroctl against the app
+-- first (`metroctl` dashboard, or `metroctl logs`), then pick "React Native:
+-- Attach via metroctl". A `debugger;` hit (and, once metroctl maps source maps,
+-- an editor breakpoint) stops here with the call stack and stepping.
 return {
   {
     "mfussenegger/nvim-dap",
@@ -30,9 +28,6 @@ return {
           handlers = {},
         },
       },
-      -- Node bridge that speaks React Native's Hermes inspector-proxy CDP
-      -- handshake; provides the `reactnativedirect` adapter. `npm ci` builds it.
-      { "AkisArou/nvim-dap-react-native", build = "npm ci" },
     },
     keys = {
       { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "[d]ebug [b]reakpoint toggle" },
@@ -84,17 +79,13 @@ return {
         }
       end
 
-      -- React Native Hermes adapter: the same js-debug server, wrapped with the
-      -- inspector-proxy handshake bridge from nvim-dap-react-native.
-      dap.adapters.reactnativedirect = require("dap-react-native").create_adapter({
+      -- React Native Hermes: attach to the DAP server metroctl runs on 9223
+      -- (it owns the one Hermes CDP connection and bridges it to us).
+      dap.adapters.metroctl = {
         type = "server",
-        host = "localhost",
-        port = "${port}",
-        executable = {
-          command = "node",
-          args = { debug_server, "${port}" },
-        },
-      })
+        host = "127.0.0.1",
+        port = 9223,
+      }
 
       local js_filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" }
       for _, ft in ipairs(js_filetypes) do
@@ -120,16 +111,14 @@ return {
             sourceMaps = true,
             skipFiles = { "<node_internals>/**" },
           },
-          -- React Native Hermes attach. Start Metro + the app FIRST, then pick
-          -- this. Uses RCT_METRO_PORT / REACT_NATIVE_PACKAGER_HOSTNAME if set,
-          -- otherwise localhost:8081.
+          -- React Native Hermes, via metroctl. Start metroctl against the app
+          -- first (it listens on 9223), then pick this.
           {
-            type = "reactnativedirect",
+            type = "metroctl",
             request = "attach",
-            name = "React Native: Attach Hermes",
+            name = "React Native: Attach via metroctl",
             cwd = "${workspaceFolder}",
             sourceMaps = true,
-            skipFiles = { "<node_internals>/**" },
           },
         }
       end
