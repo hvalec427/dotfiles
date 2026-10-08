@@ -51,9 +51,9 @@ return {
       dapui.setup()
       require("nvim-dap-virtual-text").setup({})
 
-      -- Open the inspector panels on session start, tear them down on exit.
-      dap.listeners.before.attach.dapui_config = function() dapui.open() end
-      dap.listeners.before.launch.dapui_config = function() dapui.open() end
+      -- Don't auto-open the dap-ui panels -- keep the screen on your code when a
+      -- session attaches. Toggle them yourself with <leader>du. Still tear them
+      -- down on exit in case you opened them.
       dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
       dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
 
