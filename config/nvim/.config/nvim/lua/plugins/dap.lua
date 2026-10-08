@@ -5,11 +5,28 @@
 --
 -- React Native / Hermes attach (RN >= 0.76): handled by `metroctl`, which owns
 -- the single Hermes CDP connection the fusebox inspector allows and re-exposes
--- it as a DAP server on port 9223. So nvim attaches to metroctl (not Hermes
--- directly) via the `metroctl` adapter below. Run metroctl against the app
--- first (`metroctl` dashboard, or `metroctl logs`), then pick "React Native:
--- Attach via metroctl". A `debugger;` hit (and, once metroctl maps source maps,
--- an editor breakpoint) stops here with the call stack and stepping.
+-- it as a DAP server on port 9223. nvim attaches to metroctl (not Hermes
+-- directly). Run metroctl against the app first (`metroctl` dashboard, or
+-- `metroctl logs`), then press <leader>dr to attach — it checks the port first
+-- and tells you if metroctl isn't running instead of erroring.
+
+-- Synchronous TCP reachability check (blocks briefly, pumps the event loop so
+-- the libuv connect callback can fire). Used to pre-flight the metroctl attach.
+local function port_open(host, port)
+  local tcp = vim.loop.new_tcp()
+  local result = nil
+  tcp:connect(host, port, function(err)
+    result = err == nil
+    pcall(function() tcp:close() end)
+  end)
+  vim.wait(500, function() return result ~= nil end, 10)
+  if result == nil then
+    pcall(function() tcp:close() end)
+    return false
+  end
+  return result
+end
+
 return {
   {
     "mfussenegger/nvim-dap",
@@ -39,6 +56,27 @@ return {
         desc = "[d]ebug conditional [B]reakpoint",
       },
       { "<leader>dc", function() require("dap").continue() end, desc = "[d]ebug [c]ontinue / start" },
+      {
+        "<leader>dr",
+        function()
+          if port_open("127.0.0.1", 9223) then
+            require("dap").run({
+              type = "metroctl",
+              request = "attach",
+              name = "React Native: Attach via metroctl",
+              cwd = "${workspaceFolder}",
+              sourceMaps = true,
+            })
+          else
+            vim.notify(
+              "metroctl isn't running (nothing on :9223).\nStart it in your React Native project (run `metroctl`), then attach again.",
+              vim.log.levels.WARN,
+              { title = "React Native debug" }
+            )
+          end
+        end,
+        desc = "[d]ebug [r]eact native (metroctl)",
+      },
       { "<leader>di", function() require("dap").step_into() end, desc = "[d]ebug step [i]nto" },
       { "<leader>do", function() require("dap").step_over() end, desc = "[d]ebug step [o]ver" },
       { "<leader>dO", function() require("dap").step_out() end, desc = "[d]ebug step [O]ut" },
@@ -80,40 +118,10 @@ return {
       end
 
       -- React Native Hermes: attach to the DAP server metroctl runs on 9223
-      -- (it owns the one Hermes CDP connection and bridges it to us). Probe the
-      -- port first so a not-running metroctl gives a helpful message instead of
-      -- a raw "ECONNREFUSED".
-      dap.adapters.metroctl = function(callback)
-        local host, port = "127.0.0.1", 9223
-        local tcp = vim.loop.new_tcp()
-        local timer = vim.loop.new_timer()
-        local settled = false
-        local function finish(ok)
-          if settled then
-            return
-          end
-          settled = true
-          pcall(function()
-            timer:stop()
-            timer:close()
-          end)
-          pcall(function() tcp:close() end)
-          if ok then
-            callback({ type = "server", host = host, port = port })
-          else
-            vim.schedule(function()
-              vim.notify(
-                "metroctl isn't running (nothing on :" .. port .. ").\nStart it in your React Native project (run `metroctl`), then attach again.",
-                vim.log.levels.WARN,
-                { title = "React Native debug" }
-              )
-            end)
-          end
-        end
-        -- Treat a slow/absent connect as "not running".
-        timer:start(400, 0, function() finish(false) end)
-        tcp:connect(host, port, function(err) finish(err == nil) end)
-      end
+      -- (it owns the one Hermes CDP connection and bridges it to us). Started via
+      -- <leader>dr, which pre-checks the port — so the adapter itself is a plain
+      -- server connection.
+      dap.adapters.metroctl = { type = "server", host = "127.0.0.1", port = 9223 }
 
       local js_filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" }
       for _, ft in ipairs(js_filetypes) do
@@ -139,15 +147,8 @@ return {
             sourceMaps = true,
             skipFiles = { "<node_internals>/**" },
           },
-          -- React Native Hermes, via metroctl. Start metroctl against the app
-          -- first (it listens on 9223), then pick this.
-          {
-            type = "metroctl",
-            request = "attach",
-            name = "React Native: Attach via metroctl",
-            cwd = "${workspaceFolder}",
-            sourceMaps = true,
-          },
+          -- React Native Hermes attach is launched via <leader>dr (which
+          -- pre-checks that metroctl is running), not from this picker list.
         }
       end
 
