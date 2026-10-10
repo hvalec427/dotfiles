@@ -4,8 +4,7 @@ set -e
 DIR="$(cd "$(dirname "$0")/" && pwd)"
 log() { printf "\n==> %s\n" "$*"; }
 
-# Shared stow helpers + the global STOW_<PKG> toggles (also used by
-# private/install.sh, so one config governs both repos).
+# Shared stow helpers + this repo's STOW_<PKG> toggles.
 . "$DIR/lib/stow.sh"
 load_stow_conf "$DIR"
 
@@ -65,13 +64,6 @@ install_repos() {
 install_repos
 log "done installing repos"
 
-if command -v git >/dev/null && [ -f "$DIR/.gitmodules" ]; then
-  log "initializing private submodule"
-  if ! git -C "$DIR" submodule update --init private >/dev/null 2>&1; then
-    log "No credentials. Skipping..."
-  fi
-fi
-
 log "adding zsh aliases"
 alias_file="$DIR/zsh/common.zsh"
 zshrc="$HOME/.zshrc"
@@ -100,17 +92,11 @@ fi
 
 log "Installation done. Enjoy :)"
 
+# private/ is only populated when cloned with --recurse-submodules
 private_installer="$DIR/private/install.sh"
 if [ -f "$private_installer" ]; then
   chmod +x "$private_installer"
   log "running private installer"
   "$private_installer"
-else
-  if [ -d "$DIR/private" ]; then
-    log "private installer missing; ensure private submodule is fully initialized"
-  else
-    log "private repository not cloned; run 'git submodule update --init private' to pull it in"
-  fi
-  log "skipping private configuration"
 fi
 

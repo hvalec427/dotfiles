@@ -4,45 +4,38 @@ Welcome to my dotfiles repository. The scripts and configurations here describe 
 
 ## Overview
 
-This repo uses a single installer to bootstrap Homebrew, deploy Brewfiles, stow configuration packages into `~/.config`, and add shared zsh aliases. It optionally runs a second, private installer that layers sensitive or personal tweaks on top of the public dotfiles.
+A single installer bootstraps Homebrew, installs the `Brewfile`, stows configuration packages from `config/` into `~` / `~/.config`, and adds shared zsh aliases.
 
-## Quick start (new machine)
+## Setup
 
-One line, no prerequisites beyond `git` and `curl`:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/hvalec427/dotfiles/master/bootstrap.sh | bash
-```
-
-This clones the repo to `~/dev/dotfiles` over HTTPS (works with no SSH key) and runs `install.sh`. If the private repo is reachable over SSH it switches `origin` to SSH so pushes work; otherwise it keeps HTTPS so re-running the command later keeps working without a key. The private submodule is pulled during install and needs a GitHub SSH key (see [Private configuration](#private-configuration)).
-
-## Manual setup
-
-1. **Clone the repository:**
+1. **Clone the repository.** On a fresh Mac, the first `git` asks to install the command line developer tools; accept, then run it again.
 
    ```sh
-   git clone git@github.com:hvalec427/dotfiles.git
-   cd dotfiles
+   git clone https://github.com/hvalec427/dotfiles.git ~/dev/dotfiles
+   cd ~/dev/dotfiles
    ```
 
-   The installer pulls in the private submodule on its own (see [Private configuration](#private-configuration)), so a plain clone is enough.
+2. **Optional:** create `install.conf.local` (see [Per-machine overrides](#per-machine-overrides)). It must exist before the installer runs.
 
-2. **Make the installer executable:**
-
-   ```sh
-   chmod +x install.sh
-   ```
-
-3. **Run the installer:**
+3. **Run `install.sh`** from the repo root:
 
    ```sh
    ./install.sh
    ```
 
-4. **Re-running the installer** is safe; it will only reapply missing symlinks or clone missing repos.
+Re-running the installer is safe; it only reapplies missing symlinks and clones missing repos.
 
-## Private configuration
+## What the installer does
 
-The `private/` directory contains additional dotfiles, tmux helpers, and Brewfiles that are not tracked in the public repository. It's a git submodule pointing at a private repo.
+- Installs Homebrew (if missing) and the `Brewfile`.
+- Stows every package in `config/` into `~` / `~/.config`.
+- Clones the repos listed in `repos.txt` (e.g. tmux plugin manager).
+- Adds a block to `~/.zshrc` that sources `zsh/common.zsh`.
 
-`install.sh` initializes and clones this submodule automatically, then runs its installer, so there's no manual clone step. This requires a GitHub SSH key with access to the private repo — without it, the installer prints `No credentials. Skipping...` and continues with just the public config.
+## Per-machine overrides
+
+- `install.conf` holds the **tracked defaults** — every package in `config/` listed with its `STOW_<PKG>` flag, all `true`. Add a line there when you add a package (one without a flag is still stowed).
+- `install.conf.local` holds **per-machine overrides** — it is gitignored, loaded after `install.conf`, and overrides it. For example, to keep a machine's own `~/.gitconfig`:
+
+Turning a package off only stops it from being stowed; it doesn't remove links that already exist.
+To remove them, run once from the repo root, replacing `<package>` with the folder name in `config/` you turned off (e.g. `karabiner` for `STOW_KARABINER`): `stow -D -d config -t ~ <package>`.

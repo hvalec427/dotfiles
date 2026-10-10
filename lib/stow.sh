@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Shared stow helpers used by BOTH the public installer (install.sh) and the
-# private one (private/install.sh), so a single set of STOW_<PKG> toggles in
-# the repo-root install.conf / install.conf.local governs every package in
-# either repo.
+# private one (private/install.sh). Each installer loads the STOW_<PKG> toggles
+# from its own repo's install.conf / install.conf.local.
 
 # Fallback log() so the lib is usable even if the caller hasn't defined one.
 command -v log >/dev/null 2>&1 || log() { printf "\n==> %s\n" "$*"; }
