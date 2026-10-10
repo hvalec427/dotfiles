@@ -9,6 +9,14 @@ log() { printf "\n==> %s\n" "$*"; }
 . "$DIR/lib/stow.sh"
 load_stow_conf "$DIR"
 
+# Use the 1Password SSH agent (if running) for the private submodule clone;
+# ~/.ssh/config only learns about it once the private installer has run.
+OP_SSH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+if [ -S "$OP_SSH_SOCK" ]; then
+  log "using 1Password SSH agent"
+  export SSH_AUTH_SOCK="$OP_SSH_SOCK"
+fi
+
 log "making scripts executable"
 bash "$DIR/zsh/make-scripts-executable.sh"
 

@@ -14,6 +14,8 @@ load_stow_conf() {
   for conf in "$base/install.conf" "$base/install.conf.local"; do
     [ -f "$conf" ] && { log "loading ${conf#"$base"/}"; . "$conf"; }
   done
+  # a missing install.conf.local is fine; don't trip callers' `set -e`
+  return 0
 }
 
 # stow_enabled <pkg>: honors STOW_<PKG> (pkg name uppercased, non-alphanumerics
@@ -59,6 +61,7 @@ stow_all() {
 
   for pkg in "${packages[@]}"; do
     log "stowing: $pkg"
-    stow -d "$config_dir" -t "$target" "$pkg"
+    # Finder drops .DS_Store into package dirs; never try to link them
+    stow --ignore='\.DS_Store' -d "$config_dir" -t "$target" "$pkg"
   done
 }

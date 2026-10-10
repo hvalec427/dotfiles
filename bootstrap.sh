@@ -17,6 +17,14 @@ log() { printf "\n==> %s\n" "$*"; }
 
 command -v git >/dev/null || { echo "git is required but not installed" >&2; exit 1; }
 
+# A fresh machine has no ~/.ssh/config yet, so point ssh at the 1Password agent
+# directly when it's running; that's where the GitHub key lives.
+OP_SSH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+if [ -S "$OP_SSH_SOCK" ]; then
+  log "using 1Password SSH agent"
+  export SSH_AUTH_SOCK="$OP_SSH_SOCK"
+fi
+
 if [ -d "$TARGET/.git" ]; then
   log "dotfiles already at $TARGET; pulling latest"
   git -C "$TARGET" pull --ff-only
