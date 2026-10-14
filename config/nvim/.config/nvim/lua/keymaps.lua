@@ -1,6 +1,15 @@
 local map = vim.keymap.set
 
 -- =========================
+-- Movement
+-- =========================
+
+-- Move by screen line through wrapped text; with a count (e.g. `5j` from
+-- relative numbers) keep moving by real lines.
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (screen line)" })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (screen line)" })
+
+-- =========================
 -- mini.pick pickers
 -- =========================
 
@@ -166,7 +175,8 @@ map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 
 -- Route LSP location lookups through mini.extra's picker so multi-result
 -- lookups open in the mini.pick UI (with side preview) instead of Neovim's
--- native vim.ui.select popup. Single results still jump directly.
+-- native vim.ui.select popup. mini.extra always opens the picker, so we query
+-- first and jump directly when there's a single (deduplicated) result.
 --
 -- Each key maps to exactly one LSP method, matching its real meaning:
 -- `grd` go-to-definition is the everyday nav key and works on any symbol;
@@ -174,7 +184,36 @@ map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[r]e[n]ame (LSP)" })
 -- legitimately empty on plain functions. Use `grd` for normal navigation.
 local function lsp_pick(scope)
   return function()
-    require("mini.extra").pickers.lsp({ scope = scope })
+    local opts = {
+      on_list = function(data)
+        local seen, items = {}, {}
+        for _, item in ipairs(data.items) do
+          local key = ("%s:%d:%d"):format(item.filename, item.lnum, item.col)
+          if not seen[key] then
+            seen[key] = true
+            table.insert(items, item)
+          end
+        end
+
+        if #items == 1 then
+          local item = items[1]
+          vim.cmd("normal! m'")
+          vim.cmd.edit(vim.fn.fnameescape(item.filename))
+          vim.api.nvim_win_set_cursor(0, { item.lnum, item.col - 1 })
+          vim.cmd("normal! zv")
+        elseif #items > 1 then
+          require("mini.extra").pickers.lsp({ scope = scope })
+        else
+          vim.notify("No " .. scope:gsub("_", " ") .. " found", vim.log.levels.INFO)
+        end
+      end,
+    }
+    -- `references` takes a context table before its options
+    if scope == "references" then
+      vim.lsp.buf.references(nil, opts)
+    else
+      vim.lsp.buf[scope](opts)
+    end
   end
 end
 
