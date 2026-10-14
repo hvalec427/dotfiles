@@ -105,6 +105,30 @@ local function files_command(all)
   return apply_visibility({ "rg", "--files", "--color=never" }, all)
 end
 
+-- Reorder rg's file list so visited files come first, by frecency. mini.pick
+-- keeps this order for an empty query and uses it to break ties between
+-- equally good fuzzy matches, so frecency also ranks results while typing.
+local function frecency_sort(cwd)
+  cwd = vim.fs.normalize(cwd or vim.fn.getcwd())
+  return function(lines)
+    while lines[#lines] == "" do lines[#lines] = nil end
+    local ok, visits = pcall(require, "mini.visits")
+    if not ok then return lines end
+
+    local rank = {}
+    for i, path in ipairs(visits.list_paths(cwd)) do
+      if path:sub(1, #cwd + 1) == cwd .. "/" then rank[path:sub(#cwd + 2)] = i end
+    end
+
+    local visited, rest = {}, {}
+    for _, line in ipairs(lines) do
+      table.insert(rank[line] and visited or rest, line)
+    end
+    table.sort(visited, function(a, b) return rank[a] < rank[b] end)
+    return vim.list_extend(visited, rest)
+  end
+end
+
 local function grep_command(all, pattern)
   -- --json gives us each match's exact byte range (submatch start/end), which
   -- the plain --column format lacks. Without the end offset mini.pick can only
@@ -171,7 +195,7 @@ function M.files(o)
   }
   restore_query(o._query)
   pick.builtin.cli(
-    { command = files_command(all) },
+    { command = files_command(all), postprocess = frecency_sort(cwd), spawn_opts = { cwd = cwd } },
     { source = { name = name, cwd = cwd, show = show_icons } }
   )
 end

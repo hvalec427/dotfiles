@@ -14,6 +14,7 @@ map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (s
 -- =========================
 
 map("n", "ff", function() require("mini.pickers").files() end, { desc = "[f]ind [f]iles" })
+map("n", "fv", function() require("mini.extra").pickers.visit_paths() end, { desc = "[f]ind [v]isited files" })
 map("n", "fr", function() require("mini.pick").builtin.resume() end, { desc = "[f]ind [r]esume last picker" })
 map("n", "<leader><space>", function()
   local pick = require("mini.pick")
