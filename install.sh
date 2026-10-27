@@ -83,12 +83,7 @@ else
   log "$alias_file missing; skipping aliases"
 fi
 
-if [ -f "$HOME/.zshrc" ]; then
-  log "sourcing ~/.zshrc"
-  source "$HOME/.zshrc" || log "sourcing ~/.zshrc failed; rerun manually from zsh"
-else
-  log "~/.zshrc missing; skipping shell refresh"
-fi
+log "run 'exec zsh' to reload your shell"
 
 log "Installation done. Enjoy :)"
 
