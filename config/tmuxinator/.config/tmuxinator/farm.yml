@@ -1,0 +1,10 @@
+name: farm
+root: "~/Library/Application Support/com.TheFarmerWasReplaced.TheFarmerWasReplaced/Saves/Save0"
+
+windows:
+  - editor:
+      layout: main-horizontal
+      panes:
+        - nvim f0.py
+        # Print output; the game writes it next to the Saves folder.
+        - tmux set -w main-pane-height 75% && tmux select-layout main-horizontal && touch ../../output.txt && tail -n 50 -F ../../output.txt
