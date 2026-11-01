@@ -12,6 +12,8 @@ return {
         javascript = { "prettier", "eslint_d" },
         typescript = { "prettier", "eslint_d" },
         svelte = { "prettier" },
+        -- No Python formatter installed; just clean up whitespace.
+        python = { "trim_whitespace", "trim_newlines" },
       },
     })
   end,

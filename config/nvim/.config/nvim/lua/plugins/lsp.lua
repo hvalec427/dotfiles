@@ -48,6 +48,7 @@ return {
             },
           },
         },
+        pyright = {},
         svelte = {},
         eslint = {},
         graphql = {
