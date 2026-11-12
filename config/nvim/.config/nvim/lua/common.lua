@@ -1,6 +1,20 @@
 -- Shared configuration helpers for Neovim
 
 vim.g.mapleader = " "             -- Space as leader
+-- Yank to this machine's clipboard and, via OSC 52, to the terminal's machine,
+-- so Cmd+V works on the laptop when nvim runs over SSH.
+local function copy(reg)
+  local osc52 = require("vim.ui.clipboard.osc52").copy(reg)
+  return function(lines, regtype)
+    vim.system({ "pbcopy" }, { stdin = table.concat(lines, "\n") })
+    osc52(lines, regtype)
+  end
+end
+vim.g.clipboard = {
+  name = "pbcopy+osc52",
+  copy = { ["+"] = copy("+"), ["*"] = copy("*") },
+  paste = { ["+"] = { "pbpaste" }, ["*"] = { "pbpaste" } },
+}
 vim.opt.clipboard = "unnamedplus" -- System clipboard
 vim.opt.tabstop = 2               -- Tab = 2 spaces
 vim.opt.shiftwidth = 2            -- Indent = 2 spaces
