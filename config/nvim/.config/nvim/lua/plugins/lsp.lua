@@ -48,6 +48,9 @@ return {
             },
           },
         },
+        -- JSON with schema checks and completion; a file's own "$schema" picks
+        -- its schema (laundryheap's SDUI layout.json files point at theirs).
+        jsonls = {},
         pyright = {},
         svelte = {},
         eslint = {},
